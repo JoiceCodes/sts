@@ -16,7 +16,7 @@
                     No
                 </button>
                 <form action="../process/accept_case.php" method="post">
-                    <input type="hidden" name="case_id" id="caseId">
+                    <input type="hidden" name="case_id" id="caseId" value="">
                     <button type="submit" class="btn btn-primary">Yes</button>
                 </form>
                 <!-- <a class="btn btn-primary" href="login.html">Yes</a> -->

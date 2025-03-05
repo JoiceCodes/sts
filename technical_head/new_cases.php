@@ -1,7 +1,10 @@
     <?php
     session_start();
+    $pageTitle = "New Cases";
+
 
     require_once "../fetch/new_cases.php";
+    require_once "../fetch/engineers.php";
     ?>
 
     <!DOCTYPE html>
@@ -30,7 +33,7 @@
                     <div class="container-fluid">
                         <!-- Page Heading -->
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-gray-800">New Cases</h1>
+                            <h1 class="h3 mb-0 text-gray-800"><?= $pageTitle ?></h1>
                             <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                     class="fas fa-download fa-sm text-white-50"></i> Generate
                                 Report</a> -->
@@ -63,10 +66,10 @@
                                             type="button" 
                                             class="accept-button badge btn btn-success" 
                                             data-toggle="modal" 
-                                            data-target="#acceptCase"
+                                            data-target="#assignCase"
                                             data-case-id="' . $row["id"] . '">
                                                 <i class="bi bi-check"></i> 
-                                                Accept Case
+                                                Assign Case
                                             </button>';
 
                                         echo "<tr>";
@@ -109,7 +112,7 @@
         <!-- Logout Modal-->
         <?php include_once "../modals/logout.php" ?>
 
-        <?php include_once "../modals/accept_case_confirmation.php" ?>
+        <?php include_once "../modals/assign_case.php" ?>
 
         <!-- Bootstrap core JavaScript-->
         <script src="../vendor/jquery/jquery.min.js"></script>
@@ -120,6 +123,7 @@
 
         <!-- Custom scripts for all pages-->
         <script src="../js/sb-admin-2.min.js"></script>
+        <script src="../js/form_validation.js"></script>
 
         <!-- Page level plugins -->
         <!-- <script src="../vendor/chart.js/Chart.min.js"></script> -->
@@ -134,7 +138,7 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                const acceptCaseModal = document.getElementById("acceptCase");
+                const assignCaseModal = document.getElementById("assignCase");
                 const caseIdHidden = document.getElementById("caseId");
 
                 document.querySelectorAll('.accept-button').forEach(item => {

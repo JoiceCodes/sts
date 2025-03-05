@@ -1,9 +1,9 @@
 <?php
 require_once "../config/database.php";
 
-$getOngoingCases = mysqli_prepare($connection, "SELECT * FROM cases WHERE case_status = ? AND contact_name = ?");
+$getOngoingCases = mysqli_prepare($connection, "SELECT * FROM cases WHERE case_status = ?");
 $caseStatus = "Waiting in Progress";
-mysqli_stmt_bind_param($getOngoingCases, "ss", $caseStatus, $_SESSION["user_full_name"]);
+mysqli_stmt_bind_param($getOngoingCases, "s", $caseStatus);
 mysqli_stmt_execute($getOngoingCases);
 $getOngoingCasesResult = mysqli_stmt_get_result($getOngoingCases);
 

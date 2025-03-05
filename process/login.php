@@ -19,7 +19,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["user_username"] = $userRow["username"];
             $_SESSION["user_role"] = $userRow["role"]; 
 
-            header("Location: ../engineer/home.php");
+            switch ($_SESSION["user_role"]) {
+                case "Technical Head":
+                    $folder = "technical_head";
+                    break;
+                case "Technical Engineer":
+                    $folder = "technical_engineer";
+                    break;
+                case "Engineer":
+                    $folder = "engineer";
+                    break;
+                case "User":
+                    $folder = "user";
+                    break;
+            }
+
+            header("Location: ../$folder/home.php");
             exit;
         } else {
             echo "Invalid username or password";

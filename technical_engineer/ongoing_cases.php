@@ -1,6 +1,8 @@
 <?php
 session_start();
-require_once "../fetch/ongoing_cases.php";
+$pageTitle = "On-going Cases";
+
+require_once "../fetch/technical_ongoing_cases.php";
 ?>
 
 <!DOCTYPE html>
@@ -87,7 +89,7 @@ require_once "../fetch/ongoing_cases.php";
                 <div class="container-fluid">
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">On-going Cases</h1>
+                        <h1 class="h3 mb-0 text-gray-800"><?= $pageTitle ?></h1>
                         <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate
                             Report</a> -->
