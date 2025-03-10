@@ -93,6 +93,7 @@ require_once "../fetch/my_cases.php";
                         <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate
                             Report</a> -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCase">+ New Case</button>
                     </div>
 
                     <div class="table-responsive">
@@ -183,6 +184,8 @@ require_once "../fetch/my_cases.php";
 
     <!-- Logout Modal-->
     <?php include_once "../modals/logout.php" ?>
+
+    <?php include_once "../modals/new_case.php" ?>
 
     <!-- Chat Modal -->
     <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">

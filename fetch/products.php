@@ -1,7 +1,17 @@
 <?php
 require_once "../config/database.php";
 
-$getProducts = mysqli_prepare($connection, "SELECT * FROM products");
+$getProducts = mysqli_prepare($connection, "SELECT 
+id, 
+product_name,
+product_category,
+product_type,
+product_version,
+license_type,
+serial_number,
+license_duration,
+created_at
+FROM products");
 mysqli_stmt_execute($getProducts);
 $getProductsResult = mysqli_stmt_get_result($getProducts);
 $products = [];

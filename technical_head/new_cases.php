@@ -60,7 +60,11 @@
                                 <tbody>
                                     <?php
                                     foreach ($newCasesTable as $row) {
-                                        $caseNumber = '<a href="#" class="case-number btn" data-case-id="' . $row["id"] . '" data-case-number="' . $row["case_number"] . '" data-case-owner="' . $row["case_owner"] . '">' . $row["case_number"] . '</a>';
+                                        $caseNumber = '<a href="#" class="case-number btn" 
+                                        data-case-id="' . $row["id"] . '" 
+                                        data-case-number="' . $row["case_number"] . '" 
+                                        data-case-owner="' . $row["case_owner"] . '">' . $row["case_number"] . '
+                                        </a>';
 
                                         $action = '<button 
                                             type="button" 

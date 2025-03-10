@@ -45,9 +45,9 @@ require_once "../fetch/products.php";
                                     <th>Category</th>
                                     <th>Type</th>
                                     <th>Version</th>
-                                    <th>Support Platform(s)</th>
                                     <th>License Type</th>
                                     <th>Serial Number</th>
+                                    <th>Support Platform(s)</th>
                                     <th>License Duration</th>
                                     <th>Added on</th>
                                     <th></th>
@@ -56,15 +56,25 @@ require_once "../fetch/products.php";
                             <tbody>
                                 <?php
                                 foreach ($products as $row) {
+                                    $viewPlatforms = '<button 
+                                    data-bs-product-id="' . $row["id"] . '"
+                                    data-bs-product-name="' . $row["product_name"] . '"
+                                    type="button" 
+                                    class="view-button btn btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#supportedPlatforms">
+                                    <i class="bi bi-eye-fill"></i> 
+                                    View
+                                    </button>';
 
                                     echo "<tr>";
                                     echo "<td>" . $row["product_name"] . "</td>";
                                     echo "<td>" . $row["product_category"] . "</td>";
                                     echo "<td>" . $row["product_type"] . "</td>";
                                     echo "<td>" . $row["product_version"] . "</td>";
-                                    echo "<td>" . $row["supported_platform"] . "</td>";
                                     echo "<td>" . $row["license_type"] . "</td>";
                                     echo "<td>" . $row["serial_number"] . "</td>";
+                                    echo "<td>" . $viewPlatforms . "</td>";
                                     echo "<td>" . $row["license_duration"] . "</td>";
                                     echo "<td>" . $row["created_at"] . "</td>";
                                     echo "<td></td>";
@@ -94,7 +104,10 @@ require_once "../fetch/products.php";
 
     <!-- Logout Modal-->
     <?php include_once "../modals/logout.php" ?>
+
     <?php include_once "../modals/add_product.php" ?>
+    <?php include_once "../modals/supported_platforms.php" ?>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="../vendor/jquery/jquery.min.js"></script>
@@ -106,6 +119,19 @@ require_once "../fetch/products.php";
     <!-- Custom scripts for all pages-->
     <script src="../js/sb-admin-2.min.js"></script>
     <script src="../js/form_validation.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const assignCaseModal = document.getElementById("supportedPlatforms");
+            const modalTitle = document.getElementById("productName");
+
+            document.querySelectorAll('.view-button').forEach(item => {
+                item.addEventListener('click', function(event) {
+                    modalTitle.textContent = this.getAttribute('data-bs-product-name');
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
