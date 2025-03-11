@@ -13,11 +13,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $getEngineersResult = mysqli_stmt_get_result($getEngineer);
     if (mysqli_num_rows($getEngineersResult) > 0) {
         $row = mysqli_fetch_assoc($getEngineersResult);
-        $engineerName = $row["full_name"];
+        $engineer = $row["id"];
     }
 
-    $setCase = mysqli_prepare($connection, "UPDATE cases SET contact_name = ?, case_status = ? WHERE id = ?");
-    mysqli_stmt_bind_param($setCase, "ssi", $engineerName, $caseStatus, $caseId);
+    $setCase = mysqli_prepare($connection, "UPDATE cases SET user_id = ?, case_status = ?, datetime_opened = NOW() WHERE id = ?");
+    mysqli_stmt_bind_param($setCase, "isi", $engineer, $caseStatus, $caseId);
     mysqli_stmt_execute($setCase);
 
     switch($_SESSION["user_role"]) {
@@ -29,6 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             break;
     }
 
-    header("Location: ../$folder/new_cases.php");
+    header("Location: ../$folder/new_cases.php?success=1");
     exit;
 }

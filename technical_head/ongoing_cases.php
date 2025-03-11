@@ -10,6 +10,7 @@ require_once "../fetch/technical_ongoing_cases.php";
 
 <head>
     <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 
     <style>
         /* Styling for chat messages */
@@ -96,7 +97,7 @@ require_once "../fetch/technical_ongoing_cases.php";
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table">
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
@@ -197,6 +198,13 @@ require_once "../fetch/technical_ongoing_cases.php";
     <!-- Page level custom scripts -->
     <script src="../js/demo/chart-area-demo.js"></script>
     <script src="../js/demo/chart-pie-demo.js"></script>
+
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        new DataTable('#table');
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

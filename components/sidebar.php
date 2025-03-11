@@ -1,6 +1,6 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="home.php">
         <div class="sidebar-brand-icon">
             <!-- <i class="fas fa-laugh-wink"></i> -->
             <i class="bi bi-person-fill"></i>
@@ -29,19 +29,19 @@
         </li>
     <?php elseif ($_SESSION["user_role"] === "Engineer"): ?>
         <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+        <li class="nav-item <?= !in_array($pageTitle, $myCasesPages) ? "" : "active" ?>">
+            <a class="nav-link <?= !in_array($pageTitle, $myCasesPages) ? "collapsed" : "" ?>" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="<?= !in_array($pageTitle, $myCasesPages) ? "false" : "true" ?>"
                 aria-controls="collapseTwo">
-                <i class="bi bi-briefcase"></i>
+                <i class="bi bi-briefcase<?= !in_array($pageTitle, $myCasesPages) ? "" : "-fill" ?>"></i>
                 <span>My Cases</span>
             </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div id="collapseTwo" class="collapse <?= !in_array($pageTitle, $myCasesPages) ? "" : "show" ?>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Menu:</h6>
-                    <a class="collapse-item" href="new_cases.php">New</a>
-                    <a class="collapse-item" href="ongoing_cases.php">On-going</a>
-                    <a class="collapse-item" href="solved_cases.php">Solved</a>
-                    <a class="collapse-item" href="reopened_cases.php">Reopened</a>
+                    <a class="collapse-item <?= $pageTitle == "New Cases" ? "bg-primary text-white" : ""  ?>" href="new_cases.php">New</a>
+                    <a class="collapse-item <?= $pageTitle == "On-going Cases" ? "bg-primary text-white" : ""  ?>" href="ongoing_cases.php">On-going</a>
+                    <a class="collapse-item <?= $pageTitle == "Solved Cases" ? "bg-primary text-white" : ""  ?>" href="solved_cases.php">Solved</a>
+                    <a class="collapse-item <?= $pageTitle == "Reopened Cases" ? "bg-primary text-white" : ""  ?>" href="reopened_cases.php">Reopened</a>
                 </div>
             </div>
         </li>
@@ -99,15 +99,15 @@
         </li>
     <?php endif; ?>
 
-    <li class="nav-item">
+    <li class="nav-item <?= $pageTitle == "All Purchased Products" ? "active" : "" ?>">
         <a class="nav-link" href="all_purchased_products.php">
-            <i class="bi bi-bag"></i>
+            <i class="bi bi-bag<?= $pageTitle == "All Purchased Products" ? "-fill" : "" ?>"></i>
             <span>All Purchased Products</span></a>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item <?= $pageTitle == "About" ? "active" : "" ?>">
         <a class="nav-link" href="about.php">
-            <i class="bi bi-exclamation-circle"></i>
+            <i class="bi bi-exclamation-circle<?= $pageTitle == "About" ? "-fill" : "" ?>"></i>
             <span>About</span></a>
     </li>
 

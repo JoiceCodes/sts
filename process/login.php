@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (mysqli_num_rows($getUserResult) > 0) {
         $userRow = mysqli_fetch_assoc($getUserResult);
         if (password_verify($password, $userRow["password"]) || $password == $userRow["password"]) {
+            
             session_start();
             $_SESSION["user_id"] = $userRow["id"];
             $_SESSION["user_full_name"] = $userRow["full_name"];

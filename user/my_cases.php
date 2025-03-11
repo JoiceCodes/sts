@@ -10,6 +10,7 @@ require_once "../fetch/my_cases.php";
 
 <head>
     <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 
     <style>
         /* Styling for chat messages */
@@ -97,7 +98,7 @@ require_once "../fetch/my_cases.php";
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table">
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
@@ -110,6 +111,7 @@ require_once "../fetch/my_cases.php";
                                     <th>Case Owner</th>
                                     <th>Company</th>
                                     <th>Case Status</th>
+                                    <th>Attachment</th>
                                     <th>Last Modified</th>
                                     <th>Date & Time Opened</th>
                                     <th></th>
@@ -129,7 +131,7 @@ require_once "../fetch/my_cases.php";
                                     if ($row["case_status"] === "Open") {
                                         $caseNumber = '<button type="button" class="case-number btn" disabled>' . $row["case_number"] . '</button>';
                                     } else {
-                                        $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["contact_name"] . '">' . $row["case_number"] . '</a>';
+                                        $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["user_id"] . '">' . $row["case_number"] . '</a>';
                                     }
 
                                     // $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["contact_name"] . '">' . $row["case_number"] . '</a>';
@@ -155,6 +157,14 @@ require_once "../fetch/my_cases.php";
                                     echo "<td>" . $row["case_owner"] . "</td>";
                                     echo "<td>" . $row["company"] . "</td>";
                                     echo "<td>" . $row["case_status"] . "</td>";
+                                    echo "<td>";
+                                    if (!empty($row["attachment"])) {
+                                        $fileUrl = "../uploads/" . $row["attachment"]; // Adjust path based on storage location
+                                        echo '<a href="' . $fileUrl . '" target="_blank" class="btn btn-sm btn-primary">View</a>';
+                                    } else {
+                                        echo "No Attachment";
+                                    }
+                                    echo "</td>";
                                     echo "<td>" . $row["last_modified"] . "</td>";
                                     echo "<td>" . $row["datetime_opened"] . "</td>";
                                     echo "<td></td>";
@@ -222,6 +232,7 @@ require_once "../fetch/my_cases.php";
 
     <!-- Custom scripts for all pages-->
     <script src="../js/sb-admin-2.min.js"></script>
+    <script src="../js/form_validation.js"></script>
 
     <!-- Page level plugins -->
     <!-- <script src="../vendor/chart.js/Chart.min.js"></script> -->
@@ -229,6 +240,13 @@ require_once "../fetch/my_cases.php";
     <!-- Page level custom scripts -->
     <!-- <script src="../js/demo/chart-area-demo.js"></script>
     <script src="../js/demo/chart-pie-demo.js"></script> -->
+
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        new DataTable('#table');
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

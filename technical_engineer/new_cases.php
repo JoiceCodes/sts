@@ -12,6 +12,7 @@
 
     <head>
         <?php include_once "../components/head.php" ?>
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
     </head>
 
     <body id="page-top">
@@ -39,8 +40,14 @@
                                 Report</a> -->
                         </div>
 
+                        <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill"></i> Case assigned successfully! Go to <a href="ongoing_cases.php">On-going Cases</a>.
+                            </div>
+                        <?php endif; ?>
+
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table" id="table">
                                 <thead>
                                     <tr>
                                         <th>Case Number</th>
@@ -52,8 +59,6 @@
                                         <th>Severity</th>
                                         <th>Case Owner</th>
                                         <th>Company</th>
-                                        <th>Last Modified</th>
-                                        <th>Date & Time Opened</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -82,8 +87,6 @@
                                         echo "<td>" . $row["severity"] . "</td>";
                                         echo "<td>" . $row["case_owner"] . "</td>";
                                         echo "<td>" . $row["company"] . "</td>";
-                                        echo "<td>" . $row["last_modified"] . "</td>";
-                                        echo "<td>" . $row["datetime_opened"] . "</td>";
                                         echo "<td>$action</td>";
                                         echo "</tr>";
                                     }
@@ -132,8 +135,11 @@
         <!-- <script src="../js/demo/chart-area-demo.js"></script>
         <script src="../js/demo/chart-pie-demo.js"></script> -->
 
-        <script>
+        <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
 
+        <script>
+            new DataTable('#table');
         </script>
 
         <script>

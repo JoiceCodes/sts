@@ -1,6 +1,11 @@
     <?php
     session_start();
 
+    if (!isset($_SESSION["user_id"])) {
+        header("Location: ../index.php");
+        exit;
+    }
+    $pageTitle = "New Cases";
     require_once "../fetch/new_cases.php";
     ?>
 
@@ -9,6 +14,8 @@
 
     <head>
         <?php include_once "../components/head.php" ?>
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
+
     </head>
 
     <body id="page-top">
@@ -30,14 +37,21 @@
                     <div class="container-fluid">
                         <!-- Page Heading -->
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-gray-800">New Cases</h1>
+                            <h1 class="h3 mb-0 text-gray-800"><?= $pageTitle ?></h1>
                             <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                     class="fas fa-download fa-sm text-white-50"></i> Generate
                                 Report</a> -->
                         </div>
 
+                        <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill"></i> Case accepted successfully! Go to <a href="ongoing_cases.php">On-going Cases</a>.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table" id="table">
                                 <thead>
                                     <tr>
                                         <th>Case Number</th>
@@ -128,8 +142,11 @@
         <!-- <script src="../js/demo/chart-area-demo.js"></script>
         <script src="../js/demo/chart-pie-demo.js"></script> -->
 
-        <script>
+        <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
 
+        <script>
+            new DataTable('#table');
         </script>
 
         <script>

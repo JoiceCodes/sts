@@ -11,6 +11,8 @@ $ongoingCasesTable = [];
 
 if (mysqli_num_rows($getOngoingCasesResult) > 0) {
     while ($row = mysqli_fetch_assoc($getOngoingCasesResult)) {
+        $row["last_modified"] = date("F j, Y h:i:s A", strtotime($row["last_modified"]));
+        $row["datetime_opened"] = date("F j, Y h:i:s A", strtotime($row["datetime_opened"]));
         $ongoingCasesTable[] = $row;
     }   
 }

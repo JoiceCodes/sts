@@ -10,6 +10,7 @@ require_once "../fetch/technical_ongoing_cases.php";
 
 <head>
     <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 
     <style>
         /* Styling for chat messages */
@@ -95,8 +96,14 @@ require_once "../fetch/technical_ongoing_cases.php";
                             Report</a> -->
                     </div>
 
+                    <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> Case has been solved successfully! Go to <a href="solved_cases.php">Solved Cases</a>.
+                        </div>
+                    <?php endif; ?>
+
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table">
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
@@ -110,6 +117,7 @@ require_once "../fetch/technical_ongoing_cases.php";
                                     <th>Company</th>
                                     <th>Last Modified</th>
                                     <th>Date & Time Opened</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -117,6 +125,16 @@ require_once "../fetch/technical_ongoing_cases.php";
                                 foreach ($ongoingCasesTable as $row) {
                                     $caseNumber = '<a href="#" class="case-number btn" data-case-id="' . $row["id"] . '" data-case-number="' . $row["case_number"] . '" data-case-owner="' . $row["case_owner"] . '">' . $row["case_number"] . '</a>';
 
+                                    $action = '<button 
+                                    data-bs-case-number="' . $row["case_number"] . '"
+                                    data-bs-reopen="false"
+                                    data-toggle="modal"
+                                    data-target="#markAsSolved"
+                                    type="button" 
+                                    class="mark-as-solved-btn btn badge btn-primary">
+                                    <i class="bi bi-check"></i> 
+                                    Mark as Solved
+                                    </button>';
 
                                     echo "<tr>";
                                     echo "<td>" . $caseNumber . "</td>";
@@ -130,6 +148,7 @@ require_once "../fetch/technical_ongoing_cases.php";
                                     echo "<td>" . $row["company"] . "</td>";
                                     echo "<td>" . $row["last_modified"] . "</td>";
                                     echo "<td>" . $row["datetime_opened"] . "</td>";
+                                    echo "<td>" . $action . "</td>";
                                     echo "</tr>";
                                 }
                                 ?>
@@ -156,6 +175,8 @@ require_once "../fetch/technical_ongoing_cases.php";
 
     <!-- Logout Modal-->
     <?php include_once "../modals/logout.php" ?>
+
+    <?php include_once "../modals/mark_as_solved.php" ?>
 
     <!-- Chat Modal -->
     <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
@@ -198,6 +219,28 @@ require_once "../fetch/technical_ongoing_cases.php";
     <script src="../js/demo/chart-area-demo.js"></script>
     <script src="../js/demo/chart-pie-demo.js"></script>
 
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        new DataTable('#table');
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const markAsSolvedModal = document.getElementById("markAsSolved");
+            const caseNumberHidden = document.getElementById("caseNumber");
+            const isReopenHidden = document.getElementById("isReopen");
+
+            document.querySelectorAll('.mark-as-solved-btn').forEach(item => {
+                item.addEventListener('click', function(event) {
+                    caseNumberHidden.value = this.getAttribute("data-bs-case-number");
+                    isReopenHidden.value = this.getAttribute("data-bs-reopen");
+                });
+            });
+        });
+    </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const chatModal = new bootstrap.Modal(document.getElementById('chatModal'));
@@ -230,17 +273,25 @@ require_once "../fetch/technical_ongoing_cases.php";
                 fetch(`../fetch/chat_messages.php?case_number=${caseNumber}`)
                     .then(response => response.json())
                     .then(data => {
-                        chatMessages.innerHTML = ''; // Clear previous messages
-                        
+                        chatMessages.innerHTML = ''; // Clear existing messages
+
                         data.forEach(message => {
                             const messageElement = document.createElement('div');
                             const messageContent = document.createElement('span');
+                            const timeElement = document.createElement('div');
 
                             // Set message text
                             messageContent.textContent = `${message.sender}: ${message.message}`;
+                            timeElement.textContent = message.created_at; // Use formatted time from the backend
+
+                            // Style the timestamp
+                            timeElement.style.fontSize = "12px";
+                            timeElement.style.color = "#888";
+                            timeElement.style.marginTop = "5px"; // Increase margin
+                            timeElement.style.marginLeft = "10px"; // Add left margin for better spacing
 
                             // Check if the message sender is the logged-in user
-                            if (message.sender === "<?= $_SESSION["user_full_name"] ?>") {
+                            if (message.sender === "<?= $_SESSION['user_full_name'] ?>") {
                                 messageElement.classList.add('message-sender');
                                 messageContent.classList.add('message-sender-text');
                             } else {
@@ -248,15 +299,17 @@ require_once "../fetch/technical_ongoing_cases.php";
                                 messageContent.classList.add('message-receiver-text');
                             }
 
-                            // Append message content
+                            // Append message content and time
                             messageElement.appendChild(messageContent);
+                            messageElement.appendChild(timeElement);
                             chatMessages.appendChild(messageElement);
                         });
-
-                        // Auto-scroll to the latest message
+                        // Scroll to the bottom of the chat
                         chatMessages.scrollTop = chatMessages.scrollHeight;
-                    });
+                    })
+                    .catch(error => console.error('Error fetching chat messages:', error));
             }
+
 
             // Event listener for sending messages
             sendMessageButton.addEventListener('click', function() {

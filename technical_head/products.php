@@ -2,6 +2,7 @@
 session_start();
 $pageTitle = "Products";
 require_once "../fetch/products.php";
+require_once "../fetch/product_categories.php";
 ?>
 
 <!DOCTYPE html>
@@ -9,6 +10,7 @@ require_once "../fetch/products.php";
 
 <head>
     <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 </head>
 
 <body id="page-top">
@@ -37,8 +39,14 @@ require_once "../fetch/products.php";
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProduct">+ New Product</button>
                     </div>
 
+                    <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> Product status updated successfully!
+                        </div>
+                    <?php endif; ?>
+
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -50,22 +58,33 @@ require_once "../fetch/products.php";
                                     <th>Support Platform(s)</th>
                                     <th>License Duration</th>
                                     <th>Added on</th>
-                                    <th></th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 foreach ($products as $row) {
-                                    $viewPlatforms = '<button 
-                                    data-bs-product-id="' . $row["id"] . '"
-                                    data-bs-product-name="' . $row["product_name"] . '"
-                                    type="button" 
-                                    class="view-button btn btn-primary"
-                                    data-toggle="modal"
-                                    data-target="#supportedPlatforms">
-                                    <i class="bi bi-eye-fill"></i> 
-                                    View
-                                    </button>';
+                                    if ($row["status"] == "Active") {
+                                        $status = '<button 
+                                        type="button" 
+                                        class="product-action-btn btn text-success" 
+                                        data-toggle="modal" 
+                                        data-target="#productAction"
+                                        data-bs-product-status="' . $row["status"] . '"
+                                        data-bs-product-id="' . $row["id"] . '"
+                                        data-bs-action="deactivate">' . $row["status"] . '
+                                        </button>';
+                                    } else if ($row["status"] == "Deactivated") {
+                                        $status = '<button 
+                                        type="button" 
+                                        class="product-action-btn btn text-warning" 
+                                        data-toggle="modal" 
+                                        data-target="#productAction"
+                                        data-bs-product-status="' . $row["status"] . '"
+                                        data-bs-product-id="' . $row["id"] . '"
+                                        data-bs-action="activate">' . $row["status"] . '
+                                        </button>';
+                                    }
 
                                     echo "<tr>";
                                     echo "<td>" . $row["product_name"] . "</td>";
@@ -74,10 +93,10 @@ require_once "../fetch/products.php";
                                     echo "<td>" . $row["product_version"] . "</td>";
                                     echo "<td>" . $row["license_type"] . "</td>";
                                     echo "<td>" . $row["serial_number"] . "</td>";
-                                    echo "<td>" . $viewPlatforms . "</td>";
+                                    echo "<td>" . $row["supported_platforms"] . "</td>";
                                     echo "<td>" . $row["license_duration"] . "</td>";
                                     echo "<td>" . $row["created_at"] . "</td>";
-                                    echo "<td></td>";
+                                    echo "<td>" . $status . "</td>";
                                     echo "</tr>";
                                 }
                                 ?>
@@ -107,6 +126,7 @@ require_once "../fetch/products.php";
 
     <?php include_once "../modals/add_product.php" ?>
     <?php include_once "../modals/supported_platforms.php" ?>
+    <?php include_once "../modals/product_action.php" ?>
 
 
     <!-- Bootstrap core JavaScript-->
@@ -120,14 +140,32 @@ require_once "../fetch/products.php";
     <script src="../js/sb-admin-2.min.js"></script>
     <script src="../js/form_validation.js"></script>
 
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        new DataTable('#table');
+    </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const assignCaseModal = document.getElementById("supportedPlatforms");
-            const modalTitle = document.getElementById("productName");
+            const productActionModal = document.getElementById("productAction");
+            const productActionModalTitle = document.getElementById("productActionModalTitle");
+            const productActionModalBody = document.getElementById("productActionModalBody");
+            const productIdHidden = document.getElementById("productId");
+            const actionHidden = document.getElementById("action");
 
-            document.querySelectorAll('.view-button').forEach(item => {
+            document.querySelectorAll('.product-action-btn').forEach(item => {
                 item.addEventListener('click', function(event) {
-                    modalTitle.textContent = this.getAttribute('data-bs-product-name');
+                    if (this.getAttribute('data-bs-product-status') === "Active") {
+                        productActionModalTitle.textContent = "Product Deactivation";
+                        productActionModalBody.textContent = "Are you sure you want to deactivate this product?";
+                    } else if (this.getAttribute('data-bs-product-status') === "Deactivated") {
+                        productActionModalTitle.textContent = "Product Activation";
+                        productActionModalBody.textContent = "Are you sure you want to activate this product?";
+                    }
+                    productId.value = this.getAttribute("data-bs-product-id");
+                    actionHidden.value = this.getAttribute("data-bs-action");
                 });
             });
         });

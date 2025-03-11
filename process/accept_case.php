@@ -11,6 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     mysqli_stmt_bind_param($setCase, "ssi", $contactName, $caseStatus, $caseId);
     mysqli_stmt_execute($setCase);
 
-    header("Location: ../engineer/new_cases.php");
+    header("Location: ../engineer/new_cases.php?success=1");
     exit;
 }

@@ -9,6 +9,7 @@
 
 <head>
     <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 </head>
 
 <body id="page-top">
@@ -37,7 +38,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table">
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
@@ -115,6 +116,13 @@
     <!-- Page level custom scripts -->
     <script src="../js/demo/chart-area-demo.js"></script>
     <script src="../js/demo/chart-pie-demo.js"></script>
+
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        new DataTable('#table');
+    </script>
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 <?php 
-    $pageTitle = "About Us";
+    session_start();
+    $pageTitle = "About";
     // require_once "../fetch/solved_cases.php";
 ?>
 

@@ -1,7 +1,7 @@
-<?php 
-    session_start();
-    $pageTitle = "Solved Cases";
-    require_once "../fetch/solved_cases.php";
+<?php
+session_start();
+$pageTitle = "Solved Cases";
+require_once "../fetch/technical_solved_cases.php";
 ?>
 
 <!DOCTYPE html>
@@ -9,6 +9,7 @@
 
 <head>
     <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 </head>
 
 <body id="page-top">
@@ -36,8 +37,14 @@
                             Report</a> -->
                     </div>
 
+                    <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> Case reopened successfully! Go to <a href="reopened_cases.php">Reopened Cases</a>.
+                        </div>
+                    <?php endif; ?>
+
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table">
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
@@ -49,31 +56,41 @@
                                     <th>Severity</th>
                                     <th>Case Owner</th>
                                     <th>Company</th>
+                                    <th>Reopened</th>
                                     <th>Last Modified</th>
                                     <th>Date & Time Opened</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                    foreach ($solvedCasesTable as $row) {
-                                        $action = '<button type="button" class="badge btn btn-warning"><i class="bi bi-exclamation"></i> Reopen Case</button>';
-                                        
-                                        echo "<tr>";
-                                        echo "<td>" . $row["case_number"] . "</td>";
-                                        echo "<td>" . $row["type"] . "</td>";
-                                        echo "<td>" . $row["subject"] . "</td>";
-                                        echo "<td>" . $row["product_group"] . "</td>";
-                                        echo "<td>" . $row["product"] . "</td>";
-                                        echo "<td>" . $row["product_version"] . "</td>";
-                                        echo "<td>" . $row["severity"] . "</td>";
-                                        echo "<td>" . $row["case_owner"] . "</td>";
-                                        echo "<td>" . $row["company"] . "</td>";
-                                        echo "<td>" . $row["last_modified"] . "</td>";
-                                        echo "<td>" . $row["datetime_opened"] . "</td>";
-                                        echo "<td>$action</td>";
-                                        echo "</tr>";
-                                    }
+                                <?php
+                                foreach ($solvedCasesTable as $row) {
+                                    $action = '<button 
+                                        data-bs-case-number="' . $row["case_number"] . '"
+                                        type="button" 
+                                        class="reopen-case-btn badge btn btn-warning" 
+                                        data-toggle="modal" 
+                                        data-target="#reopenCase">
+                                        <i class="bi bi-exclamation"></i> 
+                                        Reopen Case
+                                        </button>';
+
+                                    echo "<tr>";
+                                    echo "<td>" . $row["case_number"] . "</td>";
+                                    echo "<td>" . $row["type"] . "</td>";
+                                    echo "<td>" . $row["subject"] . "</td>";
+                                    echo "<td>" . $row["product_group"] . "</td>";
+                                    echo "<td>" . $row["product"] . "</td>";
+                                    echo "<td>" . $row["product_version"] . "</td>";
+                                    echo "<td>" . $row["severity"] . "</td>";
+                                    echo "<td>" . $row["case_owner"] . "</td>";
+                                    echo "<td>" . $row["company"] . "</td>";
+                                    echo "<td>" . $row["reopen"] . "</td>";
+                                    echo "<td>" . $row["last_modified"] . "</td>";
+                                    echo "<td>" . $row["datetime_opened"] . "</td>";
+                                    echo "<td>$action</td>";
+                                    echo "</tr>";
+                                }
                                 ?>
                             </tbody>
                         </table>
@@ -99,6 +116,8 @@
     <!-- Logout Modal-->
     <?php include_once "../modals/logout.php" ?>
 
+    <?php include_once "../modals/reopen_case.php" ?>
+
     <!-- Bootstrap core JavaScript-->
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -115,6 +134,26 @@
     <!-- Page level custom scripts -->
     <script src="../js/demo/chart-area-demo.js"></script>
     <script src="../js/demo/chart-pie-demo.js"></script>
+
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        new DataTable('#table');
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const reopenCaseModal = document.getElementById("reopencase");
+            const caseNumberHidden = document.getElementById("caseNumber");
+
+            document.querySelectorAll('.reopen-case-btn').forEach(item => {
+                item.addEventListener('click', function(event) {
+                    caseNumberHidden.value = this.getAttribute("data-bs-case-number");
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

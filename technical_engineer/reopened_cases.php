@@ -8,6 +8,7 @@ require_once "../fetch/technical_reopened_cases.php";
 
 <head>
     <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 </head>
 
 <body id="page-top">
@@ -35,8 +36,14 @@ require_once "../fetch/technical_reopened_cases.php";
                             Report</a> -->
                     </div>
 
+                    <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> Case solved successfully! Go to <a href="solved_cases.php">Solved Cases</a> .
+                        </div>
+                    <?php endif; ?>
+
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table">
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
@@ -56,10 +63,22 @@ require_once "../fetch/technical_reopened_cases.php";
                             <tbody>
                                 <?php
                                 foreach ($reopenedCasesTable as $row) {
-                                    $action = '<button type="button" class="badge btn btn-warning"><i class="bi bi-exclamation"></i> Reopen Case</button>';
+                                    $caseNumber = '<a href="#" class="case-number btn" data-case-id="' . $row["id"] . '" data-case-number="' . $row["case_number"] . '" data-case-owner="' . $row["case_owner"] . '">' . $row["case_number"] . '</a>';
+
+                                    $action = '<button 
+                                    data-bs-case-number="' . $row["case_number"] . '"
+                                    data-bs-reopen="true"
+                                    type="button" 
+                                    class="mark-as-solved-btn btn btn-primary btn-sm" 
+                                    data-toggle="modal" 
+                                    data-target="#markAsSolved">
+                                    <i class="bi bi-check"></i> 
+                                    Mark as Solved
+                                    </button>';
+
 
                                     echo "<tr>";
-                                    echo "<td>" . $row["case_number"] . "</td>";
+                                    echo "<td>" . $caseNumber . "</td>";
                                     echo "<td>" . $row["type"] . "</td>";
                                     echo "<td>" . $row["subject"] . "</td>";
                                     echo "<td>" . $row["product_group"] . "</td>";
@@ -70,7 +89,7 @@ require_once "../fetch/technical_reopened_cases.php";
                                     echo "<td>" . $row["company"] . "</td>";
                                     echo "<td>" . $row["last_modified"] . "</td>";
                                     echo "<td>" . $row["datetime_opened"] . "</td>";
-                                    echo "<td>$action</td>";
+                                    echo "<td>" . $action . "</td>";
                                     echo "</tr>";
                                 }
                                 ?>
@@ -98,6 +117,8 @@ require_once "../fetch/technical_reopened_cases.php";
     <!-- Logout Modal-->
     <?php include_once "../modals/logout.php" ?>
 
+    <?php include_once "../modals/mark_as_solved.php" ?>
+
     <!-- Bootstrap core JavaScript-->
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -114,6 +135,28 @@ require_once "../fetch/technical_reopened_cases.php";
     <!-- Page level custom scripts -->
     <script src="../js/demo/chart-area-demo.js"></script>
     <script src="../js/demo/chart-pie-demo.js"></script>
+
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        new DataTable('#table');
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const markAsSolvedModal = document.getElementById("markAsSolved");
+            const caseNumberHidden = document.getElementById("caseNumber");
+            const isReopenHidden = document.getElementById("isReopen");
+
+            document.querySelectorAll('.mark-as-solved-btn').forEach(item => {
+                item.addEventListener('click', function(event) {
+                    caseNumberHidden.value = this.getAttribute("data-bs-case-number");
+                    isReopenHidden.value = this.getAttribute("data-bs-reopen");
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 10, 2025 at 07:53 AM
+-- Generation Time: Mar 11, 2025 at 08:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,7 +32,7 @@ CREATE TABLE `cases` (
   `case_number` varchar(50) NOT NULL,
   `type` varchar(255) NOT NULL,
   `subject` text NOT NULL,
-  `contact_name` varchar(255) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `product_group` varchar(255) NOT NULL,
   `product` varchar(255) NOT NULL,
   `product_version` varchar(50) NOT NULL,
@@ -50,10 +50,9 @@ CREATE TABLE `cases` (
 -- Dumping data for table `cases`
 --
 
-INSERT INTO `cases` (`id`, `case_number`, `type`, `subject`, `contact_name`, `product_group`, `product`, `product_version`, `severity`, `case_status`, `attachment`, `case_owner`, `company`, `last_modified`, `datetime_opened`, `reopen`) VALUES
-(1, '00762544', 'Technical Support', 'Linux Disk Utilization Report', '', 'Network Monitoring', '', '', '', 'Open', '', 'James Carlisle', '', '2025-03-05 02:32:02', '2025-02-18 12:29:59', 0),
-(7, '02585922', 'Technical Support', 'Jsjsjsjjs', 'John Doe', 'Network Monitoring', 'd27fb5e814c08773b4f9', '24.0.1', 'Production System Down', 'Waiting in Progress', 'uploads/67b6a8fd3aa047.42345979.pdf', 'Jane Smith', '0a1b06489824263d4239', '2025-03-05 02:36:50', '2025-02-20 12:01:01', 0),
-(8, '90027591', 'Technical Support', 'Ndkwkdmdmdl', 'John Doe', 'Network Monitoring', 'a17a61515d1a82636bdd', '24.0.1', 'Production System Down', 'Open', 'uploads/67b6b30f94ce38.46841737.pdf', 'Jane Smith', '732eb093c79f80eabd0c', '2025-03-03 07:04:37', '2025-02-20 12:43:59', 0);
+INSERT INTO `cases` (`id`, `case_number`, `type`, `subject`, `user_id`, `product_group`, `product`, `product_version`, `severity`, `case_status`, `attachment`, `case_owner`, `company`, `last_modified`, `datetime_opened`, `reopen`) VALUES
+(23, '00000001', 'test2', 'Jwjdk', 1, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'Solved', '1741673320_Screenshot_10-3-2025_13329_.jpeg', '3', 'Antivirus Solutions', '2025-03-11 06:52:13', '2025-03-11 14:10:28', 1),
+(25, '00000002', 'test2', 'Jeididmsbsjs', 1, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'Solved', '1741676414_images (1).jpg', '3', 'Antivirus Solutions', '2025-03-11 07:05:31', '2025-03-11 15:00:37', 1);
 
 -- --------------------------------------------------------
 
@@ -75,38 +74,17 @@ CREATE TABLE `chats` (
 --
 
 INSERT INTO `chats` (`id`, `case_number`, `sender`, `receiver`, `message`, `created_at`) VALUES
-(61, '02585922', 'John Doe', 'Jane Smith', 'test', '2025-03-03 06:55:54'),
-(62, '02585922', 'Jane Smith', 'John Doe', 'test', '2025-03-03 07:05:21'),
-(63, '02585922', 'John Doe', 'Jane Smith', 'Hi', '2025-03-05 01:12:17'),
-(64, '02585922', 'John Doe', 'Jane Smith', 'Hi', '2025-03-05 01:17:36'),
-(65, '02585922', 'Jane Smith', 'John Doe', 'Hello', '2025-03-05 01:17:51'),
-(66, '02585922', 'Jane Smith', 'John Doe', 'Hello 2', '2025-03-05 01:19:01'),
-(67, '02585922', 'Jane Smith', 'John Doe', 'Ako to', '2025-03-05 01:29:13'),
-(68, '02585922', 'John Doe', 'Jane Smith', 'Hi', '2025-03-05 01:29:15'),
-(69, '02585922', 'John Doe', 'Jane Smith', 'uwu', '2025-03-05 01:29:23'),
-(70, '02585922', 'Jane Smith', 'John Doe', 'Hoy', '2025-03-05 01:30:43'),
-(71, '02585922', 'John Doe', 'Jane Smith', 'uwu~', '2025-03-05 01:30:46'),
-(72, '02585922', 'John Doe', 'Jane Smith', 'Hdisi', '2025-03-05 01:30:48');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `platforms`
---
-
-CREATE TABLE `platforms` (
-  `id` int(11) NOT NULL,
-  `product_id` int(11) DEFAULT NULL,
-  `platform` enum('Windows','MacOS') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `platforms`
---
-
-INSERT INTO `platforms` (`id`, `product_id`, `platform`) VALUES
-(3, 3, 'Windows'),
-(4, 3, 'MacOS');
+(74, '00000001', 'Jane Smith', 'John Doe', 'hi', '2025-03-11 06:24:53'),
+(75, '00000001', 'John Doe', 'Jane Smith', 'huhu', '2025-03-11 06:24:59'),
+(76, '00000001', 'Jane Smith', 'John Doe', 'haha', '2025-03-11 06:26:27'),
+(77, '00000001', 'Jane Smith', 'John Doe', 'hehe', '2025-03-11 06:26:48'),
+(78, '00000001', 'John Doe', 'Jane Smith', 'hihi', '2025-03-11 06:26:58'),
+(79, '00000001', 'Pedro Santos', 'Jane Smith', 'Hello, ako \'to', '2025-03-11 06:29:04'),
+(80, '00000001', 'Pedro Santos', 'Jane Smith', 'Eyyy', '2025-03-11 06:29:11'),
+(81, '00000001', 'Pedro Santos', 'Jane Smith', 'yolo', '2025-03-11 06:29:20'),
+(82, '00000001', 'Juan Cruz', 'Jane Smith', 'Eyyyy🤙', '2025-03-11 06:30:23'),
+(83, '00000001', 'Pedro Santos', 'Jane Smith', 'break it down, ‘yo🤘', '2025-03-11 06:30:52'),
+(84, '00000002', 'Jane Smith', 'John Doe', 'hi', '2025-03-11 07:00:57');
 
 -- --------------------------------------------------------
 
@@ -116,13 +94,17 @@ INSERT INTO `platforms` (`id`, `product_id`, `platform`) VALUES
 
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
+  `company` varchar(255) NOT NULL,
+  `product_group` varchar(255) NOT NULL,
   `product_name` varchar(255) NOT NULL,
-  `product_category` varchar(255) NOT NULL,
-  `product_type` varchar(255) NOT NULL,
+  `product_category` enum('Progress','Neverfail','Sophos','Trustwave','SecPod - SanerNow') NOT NULL,
+  `product_type` enum('OpenEdge','Sitefinity','Moveit','DataDirect','WhatsUp Gold','Neverfail Continuity Engine','Sophos Intercept X','Sophos XG Firewall','Sophos Email','Sophos Central','Sophos MDR','Trustwave SpiderLabs','Trustwave MailMarshal','Trustwave DbProtect','Trustwave Secure Web Gateway','Trustwave Managed SIEM','SanerNow Vulnerability Management','SanerNow Patch Management','SanerNow Compliance Management','SanerNow Asset Exposure Management','SanerNow Endpoint Threat Detection & Response') NOT NULL,
   `product_version` varchar(50) NOT NULL,
+  `supported_platforms` varchar(255) NOT NULL,
   `license_type` varchar(100) NOT NULL,
   `serial_number` varchar(100) NOT NULL,
-  `license_duration` int(11) NOT NULL CHECK (`license_duration` >= 0),
+  `license_duration` date NOT NULL,
+  `status` enum('Active','Deactivated','','') NOT NULL DEFAULT 'Active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -130,8 +112,71 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `product_name`, `product_category`, `product_type`, `product_version`, `license_type`, `serial_number`, `license_duration`, `created_at`) VALUES
-(3, 'test', 'test', 'test', '20', 'test', '123', 123123, '2025-03-10 05:46:43');
+INSERT INTO `products` (`id`, `company`, `product_group`, `product_name`, `product_category`, `product_type`, `product_version`, `supported_platforms`, `license_type`, `serial_number`, `license_duration`, `status`, `created_at`) VALUES
+(3, 'XYZ Corporation', 'Antivirus Solutions', 'SecureDefender Antivirus Pro', 'Progress', 'OpenEdge', 'v12.5', 'Windows, Linux', 'Enterprise', '123', '2026-05-10', 'Deactivated', '2025-03-10 05:46:43');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_categories`
+--
+
+CREATE TABLE `product_categories` (
+  `id` int(11) NOT NULL,
+  `product_category` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_categories`
+--
+
+INSERT INTO `product_categories` (`id`, `product_category`, `created_at`) VALUES
+(1, 'Progress', '2025-03-11 02:34:32'),
+(2, 'Neverfail', '2025-03-11 02:34:32'),
+(3, 'Sophos', '2025-03-11 02:34:32'),
+(4, 'Trustwave', '2025-03-11 02:34:32'),
+(5, 'SecPod - SanerNow', '2025-03-11 02:34:32');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_types`
+--
+
+CREATE TABLE `product_types` (
+  `id` int(11) NOT NULL,
+  `product_category_id` int(11) NOT NULL,
+  `product_type` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_types`
+--
+
+INSERT INTO `product_types` (`id`, `product_category_id`, `product_type`, `created_at`) VALUES
+(1, 1, 'OpenEdge', '2025-03-11 02:39:56'),
+(2, 1, 'Sitefinity', '2025-03-11 02:39:56'),
+(3, 1, 'Moveit', '2025-03-11 02:39:56'),
+(4, 1, 'DataDirect', '2025-03-11 02:39:56'),
+(5, 1, 'WhatsUp Gold', '2025-03-11 02:39:56'),
+(6, 2, 'Neverfail Continuity Engine', '2025-03-11 02:39:56'),
+(7, 3, 'Intercept X', '2025-03-11 02:39:56'),
+(8, 3, 'XG Firewall', '2025-03-11 02:39:56'),
+(9, 3, 'Sophos Email', '2025-03-11 02:39:56'),
+(10, 3, 'Sophos Central', '2025-03-11 02:39:56'),
+(11, 3, 'Sophos MDR', '2025-03-11 02:39:56'),
+(12, 4, 'SpiderLabs', '2025-03-11 02:39:56'),
+(13, 4, 'MailMarshal', '2025-03-11 02:39:56'),
+(14, 4, 'DbProtect', '2025-03-11 02:39:56'),
+(15, 4, 'Secure Web Gateway', '2025-03-11 02:39:56'),
+(16, 4, 'Managed SIEM', '2025-03-11 02:39:56'),
+(17, 5, 'SanerNow Vulnerability Management', '2025-03-11 02:39:56'),
+(18, 5, 'SanerNow Patch Management', '2025-03-11 02:39:56'),
+(19, 5, 'SanerNow Compliance Management', '2025-03-11 02:39:56'),
+(20, 5, 'SanerNow Asset Exposure Management', '2025-03-11 02:39:56'),
+(21, 5, 'SanerNow Endpoint Threat Detection & Response', '2025-03-11 02:39:56');
 
 -- --------------------------------------------------------
 
@@ -146,6 +191,7 @@ CREATE TABLE `users` (
   `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('User','Engineer','Technical Engineer','Technical Head') NOT NULL DEFAULT 'User',
+  `account_status` enum('Active','Deactivated','','') NOT NULL DEFAULT 'Active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -153,13 +199,13 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `full_name`, `email`, `username`, `password`, `role`, `created_at`) VALUES
-(1, 'John Doe', 'arexvolkzki@gmail.com', 'johndoe', '1234', 'Engineer', '2025-02-18 03:57:37'),
-(3, 'Jane Smith', 'barandonjoice07@gmail.com', 'janesmith', '123', 'User', '2025-02-20 03:59:40'),
-(4, 'Pedro Santos', 'johndoe@example.com', 'pedrosantos', '123', 'Technical Engineer', '2025-02-20 04:18:49'),
-(5, 'Shan Cai Loyola', 'jcbrndn31@gmail.com', 'Shan', 'password', 'User', '2025-02-20 07:25:51'),
-(7, 'Juan Cruz', 'juancruz@example.com', 'juancruz', '123', 'Technical Head', '2025-02-20 07:29:09'),
-(8, 'Ranz Andrei Ornopia', 'ranz@gmail.com', 'Ranz', 'paswword', 'Engineer', '2025-02-20 07:55:17');
+INSERT INTO `users` (`id`, `full_name`, `email`, `username`, `password`, `role`, `account_status`, `created_at`) VALUES
+(1, 'John Doe', 'arexvolkzki@gmail.com', 'johndoe', '123', 'Engineer', 'Active', '2025-02-18 03:57:37'),
+(3, 'Jane Smith', 'barandonjoice07@gmail.com', 'janesmith', '123', 'User', 'Active', '2025-02-20 03:59:40'),
+(4, 'Pedro Santos', 'johndoe@example.com', 'pedrosantos', '123', 'Technical Engineer', 'Active', '2025-02-20 04:18:49'),
+(5, 'Shan Cai Loyola', 'jcbrndn31@gmail.com', 'Shan', '123', 'User', 'Active', '2025-02-20 07:25:51'),
+(7, 'Juan Cruz', 'juancruz@example.com', 'juancruz', '123', 'Technical Head', 'Active', '2025-02-20 07:29:09'),
+(8, 'Ranz Andrei Ornopia', 'ranz@gmail.com', 'Ranz', '123', 'Engineer', 'Active', '2025-02-20 07:55:17');
 
 --
 -- Indexes for dumped tables
@@ -170,7 +216,8 @@ INSERT INTO `users` (`id`, `full_name`, `email`, `username`, `password`, `role`,
 --
 ALTER TABLE `cases`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `case_number` (`case_number`);
+  ADD UNIQUE KEY `case_number` (`case_number`),
+  ADD KEY `fk_cases_user` (`user_id`);
 
 --
 -- Indexes for table `chats`
@@ -179,18 +226,24 @@ ALTER TABLE `chats`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `platforms`
---
-ALTER TABLE `platforms`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `product_id` (`product_id`);
-
---
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `serial_number` (`serial_number`);
+
+--
+-- Indexes for table `product_categories`
+--
+ALTER TABLE `product_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `product_types`
+--
+ALTER TABLE `product_types`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_category_id` (`product_category_id`);
 
 --
 -- Indexes for table `users`
@@ -208,25 +261,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `cases`
 --
 ALTER TABLE `cases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
-
---
--- AUTO_INCREMENT for table `platforms`
---
-ALTER TABLE `platforms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `product_categories`
+--
+ALTER TABLE `product_categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `product_types`
+--
+ALTER TABLE `product_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -239,10 +298,16 @@ ALTER TABLE `users`
 --
 
 --
--- Constraints for table `platforms`
+-- Constraints for table `cases`
 --
-ALTER TABLE `platforms`
-  ADD CONSTRAINT `platforms_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
+ALTER TABLE `cases`
+  ADD CONSTRAINT `fk_cases_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `product_types`
+--
+ALTER TABLE `product_types`
+  ADD CONSTRAINT `product_types_ibfk_1` FOREIGN KEY (`product_category_id`) REFERENCES `product_categories` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

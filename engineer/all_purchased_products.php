@@ -1,5 +1,13 @@
-<?php 
-    // require_once "../fetch/solved_cases.php";
+<?php
+session_start();
+
+if (!isset($_SESSION["user_id"])) {
+    header("Location: ../index.php");
+    exit;
+}
+
+// require_once "../fetch/solved_cases.php";
+$pageTitle = "All Purchased Products";
 ?>
 
 <!DOCTYPE html>
@@ -7,6 +15,7 @@
 
 <head>
     <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 </head>
 
 <body id="page-top">
@@ -28,14 +37,14 @@
                 <div class="container-fluid">
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">All Purchased Products</h1>
+                        <h1 class="h3 mb-0 text-gray-800"><?= $pageTitle ?></h1>
                         <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate
                             Report</a> -->
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="table">
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
@@ -53,25 +62,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                    // foreach ($solvedCasesTable as $row) {
-                                    //     $action = '<button type="button" class="badge btn btn-warning"><i class="bi bi-exclamation"></i> Reopen Case</button>';
-                                        
-                                    //     echo "<tr>";
-                                    //     echo "<td>" . $row["case_number"] . "</td>";
-                                    //     echo "<td>" . $row["type"] . "</td>";
-                                    //     echo "<td>" . $row["subject"] . "</td>";
-                                    //     echo "<td>" . $row["product_group"] . "</td>";
-                                    //     echo "<td>" . $row["product"] . "</td>";
-                                    //     echo "<td>" . $row["product_version"] . "</td>";
-                                    //     echo "<td>" . $row["severity"] . "</td>";
-                                    //     echo "<td>" . $row["case_owner"] . "</td>";
-                                    //     echo "<td>" . $row["company"] . "</td>";
-                                    //     echo "<td>" . $row["last_modified"] . "</td>";
-                                    //     echo "<td>" . $row["datetime_opened"] . "</td>";
-                                    //     echo "<td>$action</td>";
-                                    //     echo "</tr>";
-                                    // }
+                                <?php
+                                // foreach ($solvedCasesTable as $row) {
+                                //     $action = '<button type="button" class="badge btn btn-warning"><i class="bi bi-exclamation"></i> Reopen Case</button>';
+
+                                //     echo "<tr>";
+                                //     echo "<td>" . $row["case_number"] . "</td>";
+                                //     echo "<td>" . $row["type"] . "</td>";
+                                //     echo "<td>" . $row["subject"] . "</td>";
+                                //     echo "<td>" . $row["product_group"] . "</td>";
+                                //     echo "<td>" . $row["product"] . "</td>";
+                                //     echo "<td>" . $row["product_version"] . "</td>";
+                                //     echo "<td>" . $row["severity"] . "</td>";
+                                //     echo "<td>" . $row["case_owner"] . "</td>";
+                                //     echo "<td>" . $row["company"] . "</td>";
+                                //     echo "<td>" . $row["last_modified"] . "</td>";
+                                //     echo "<td>" . $row["datetime_opened"] . "</td>";
+                                //     echo "<td>$action</td>";
+                                //     echo "</tr>";
+                                // }
                                 ?>
                             </tbody>
                         </table>
@@ -113,6 +122,13 @@
     <!-- Page level custom scripts -->
     <script src="../js/demo/chart-area-demo.js"></script>
     <script src="../js/demo/chart-pie-demo.js"></script>
+
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        new DataTable('#table');
+    </script>
 </body>
 
 </html>

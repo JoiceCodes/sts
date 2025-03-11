@@ -1,5 +1,13 @@
 <?php 
+    session_start();
+
+    if (!isset($_SESSION["user_id"])) {
+        header("Location: ../index.php");
+        exit;
+    }
+
     // require_once "../fetch/solved_cases.php";
+    $pageTitle = "About";
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +36,7 @@
                 <div class="container-fluid">
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">About Us</h1>
+                        <h1 class="h3 mb-0 text-gray-800"><?= $pageTitle ?></h1>
                     </div>
 
                     <!-- About Section -->
