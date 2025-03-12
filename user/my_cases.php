@@ -13,62 +13,56 @@ require_once "../fetch/my_cases.php";
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
 
     <style>
-        /* Styling for chat messages */
+        /* Chat Messages Container */
         #chatMessages {
             display: flex;
             flex-direction: column;
             gap: 10px;
             /* Space between messages */
             padding: 10px;
-            /* Add some padding inside the chat container */
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        /* Common message styles */
+        .chat-message {
+            max-width: 80%;
+            word-wrap: break-word;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
         }
 
         /* Sender's message (align to the right) */
         .message-sender {
             align-self: flex-end;
-            /* Align to the right */
-            text-align: right;
-            /* Ensure the text aligns right */
-            margin-bottom: 10px;
-            /* Add spacing below messages */
-        }
-
-        .message-sender-text {
             background-color: #007bff;
             color: white;
-            padding: 10px 15px;
-            border-radius: 15px;
-            max-width: 60%;
-            /* Limit the width */
-            word-wrap: break-word;
-            /* Ensure long words wrap */
-            margin-bottom: 5px;
-            /* Add spacing between text blocks */
+            text-align: left;
         }
 
         /* Receiver's message (align to the left) */
         .message-receiver {
             align-self: flex-start;
-            /* Align to the left */
-            text-align: left;
-            /* Ensure the text aligns left */
-            margin-bottom: 10px;
-            /* Add spacing below messages */
-        }
-
-        .message-receiver-text {
             background-color: #f1f1f1;
             color: black;
-            padding: 10px 15px;
-            border-radius: 15px;
-            max-width: 60%;
-            /* Limit the width */
-            word-wrap: break-word;
-            /* Ensure long words wrap */
-            margin-bottom: 5px;
-            /* Add spacing between text blocks */
+            text-align: left;
+        }
+
+        /* Timestamp styling */
+        .message-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: right;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .message-receiver .message-time {
+            color: rgba(0, 0, 0, 0.6);
         }
     </style>
+
 </head>
 
 <body id="page-top">
@@ -97,82 +91,98 @@ require_once "../fetch/my_cases.php";
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCase">+ New Case</button>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table" id="table">
-                            <thead>
-                                <tr>
-                                    <th>Case Number</th>
-                                    <th>Type</th>
-                                    <th>Subject</th>
-                                    <th>Product Group</th>
-                                    <th>Product</th>
-                                    <th>Product Version</th>
-                                    <th>Severity</th>
-                                    <th>Case Owner</th>
-                                    <th>Company</th>
-                                    <th>Case Status</th>
-                                    <th>Attachment</th>
-                                    <th>Last Modified</th>
-                                    <th>Date & Time Opened</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                foreach ($myCases as $row) {
-                                    // switch ($row["case_status"]) {
-                                    //     case "Open":
-                                    //         $caseNumber = $row["case_number"];
-                                    //         exit;
-                                    //     default:
-                                    //         $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["contact_name"] . '">' . $row["case_number"] . '</a>';
-                                    // }
+                    <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> Case submitted successfully!
+                        </div>
+                    <?php endif; ?>
 
-                                    if ($row["case_status"] === "Open") {
-                                        $caseNumber = '<button type="button" class="case-number btn" disabled>' . $row["case_number"] . '</button>';
-                                    } else {
-                                        $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["user_id"] . '">' . $row["case_number"] . '</a>';
-                                    }
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary"><?= $pageTitle ?> Table</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Case Number</th>
+                                            <th>Type</th>
+                                            <th>Subject</th>
+                                            <th>Product Group</th>
+                                            <th>Product</th>
+                                            <th>Product Version</th>
+                                            <th>Severity</th>
+                                            <th>Case Owner</th>
+                                            <th>Company</th>
+                                            <th>Case Status</th>
+                                            <th>Attachment</th>
+                                            <th>Last Modified</th>
+                                            <th>Date & Time Opened</th>
+                                            <!-- <th></th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($myCases as $row) {
+                                            // switch ($row["case_status"]) {
+                                            //     case "Open":
+                                            //         $caseNumber = $row["case_number"];
+                                            //         exit;
+                                            //     default:
+                                            //         $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["contact_name"] . '">' . $row["case_number"] . '</a>';
+                                            // }
 
-                                    // $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["contact_name"] . '">' . $row["case_number"] . '</a>';
+                                            // if ($row["case_status"] === "Open") {
+                                            //     $caseNumber = '<button type="button" class="case-number btn" disabled>' . $row["case_number"] . '</button>';
+                                            // } else {
+                                            //     $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["user_id"] . '">' . $row["case_number"] . '</a>';
+                                            // }
 
-                                    // $action = '<button 
-                                    //     type="button" 
-                                    //     class="badge btn btn-success" 
-                                    //     id="acceptButton"
-                                    //     data-toggle="modal" 
-                                    //     data-target="#acceptCase"
-                                    //     data-bs-case-id="' . $row["id"] . '">
-                                    //         <i class="bi bi-check"></i> 
-                                    //         Accept Case</button>';
+                                            $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["user_id"] . '">' . $row["case_number"] . '</a>';
 
-                                    echo "<tr>";
-                                    echo "<td>" . $caseNumber . "</td>";
-                                    echo "<td>" . $row["type"] . "</td>";
-                                    echo "<td>" . $row["subject"] . "</td>";
-                                    echo "<td>" . $row["product_group"] . "</td>";
-                                    echo "<td>" . $row["product"] . "</td>";
-                                    echo "<td>" . $row["product_version"] . "</td>";
-                                    echo "<td>" . $row["severity"] . "</td>";
-                                    echo "<td>" . $row["case_owner"] . "</td>";
-                                    echo "<td>" . $row["company"] . "</td>";
-                                    echo "<td>" . $row["case_status"] . "</td>";
-                                    echo "<td>";
-                                    if (!empty($row["attachment"])) {
-                                        $fileUrl = "../uploads/" . $row["attachment"]; // Adjust path based on storage location
-                                        echo '<a href="' . $fileUrl . '" target="_blank" class="btn btn-sm btn-primary">View</a>';
-                                    } else {
-                                        echo "No Attachment";
-                                    }
-                                    echo "</td>";
-                                    echo "<td>" . $row["last_modified"] . "</td>";
-                                    echo "<td>" . $row["datetime_opened"] . "</td>";
-                                    echo "<td></td>";
-                                    echo "</tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+
+                                            // $caseNumber = '<a href="#" class="case-number btn" data-case-number="' . $row["case_number"] . '" data-contact-name="' . $row["contact_name"] . '">' . $row["case_number"] . '</a>';
+
+                                            // $action = '<button 
+                                            //     type="button" 
+                                            //     class="badge btn btn-success" 
+                                            //     id="acceptButton"
+                                            //     data-toggle="modal" 
+                                            //     data-target="#acceptCase"
+                                            //     data-bs-case-id="' . $row["id"] . '">
+                                            //         <i class="bi bi-check"></i> 
+                                            //         Accept Case</button>';
+
+                                            echo "<tr>";
+                                            echo "<td>" . $caseNumber . "</td>";
+                                            echo "<td>" . $row["type"] . "</td>";
+                                            echo "<td>" . $row["subject"] . "</td>";
+                                            echo "<td>" . $row["product_group"] . "</td>";
+                                            echo "<td>" . $row["product"] . "</td>";
+                                            echo "<td>" . $row["product_version"] . "</td>";
+                                            echo "<td>" . $row["severity"] . "</td>";
+                                            echo "<td>" . $row["case_owner"] . "</td>";
+                                            echo "<td>" . $row["company"] . "</td>";
+                                            echo "<td>" . $row["case_status"] . "</td>";
+                                            echo "<td>";
+                                            if (!empty($row["attachment"])) {
+                                                $fileUrl = "../uploads/" . $row["attachment"]; // Adjust path based on storage location
+                                                echo '<a href="' . $fileUrl . '" target="_blank" class="btn btn-sm btn-primary">View</a>';
+                                            } else {
+                                                echo "No Attachment";
+                                            }
+                                            echo "</td>";
+                                            echo "<td>" . $row["last_modified"] . "</td>";
+                                            echo "<td>" . $row["datetime_opened"] . "</td>";
+                                            // echo "<td></td>";
+                                            echo "</tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /.container-fluid -->
@@ -250,26 +260,11 @@ require_once "../fetch/my_cases.php";
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const acceptCaseModal = document.getElementById("acceptCase");
-            const acceptButton = document.getElementById("acceptButton");
-            const caseIdHidden = document.getElementById("caseId")
-
-            acceptCaseModal.addEventListener("show.bs.modal", function() {
-                caseNumber = acceptButton.getAttribute("data-bs-case-number");
-                contactName = acceptButton.getAttribute("data-bs-contact-name");
-                caseIdHidden.value = caseId;
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
             const chatModal = new bootstrap.Modal(document.getElementById('chatModal'));
             const chatMessages = document.getElementById('chatMessages');
             const chatInput = document.getElementById('chatInput');
             const sendMessageButton = document.getElementById('sendMessage');
             let currentCaseNumber = null;
-            let currentContactName = null;
             let chatInterval = null;
 
             // Event listener for case number clicks
@@ -277,16 +272,14 @@ require_once "../fetch/my_cases.php";
                 item.addEventListener('click', function(event) {
                     event.preventDefault();
                     currentCaseNumber = this.getAttribute('data-case-number');
-                    currentContactName = this.getAttribute("data-contact-name");
 
                     fetchChatMessages(currentCaseNumber);
                     chatModal.show();
 
-                    // Start real-time fetching when modal opens
                     if (chatInterval) clearInterval(chatInterval);
                     chatInterval = setInterval(() => {
                         fetchChatMessages(currentCaseNumber);
-                    }, 3000); // Fetch every 3 seconds
+                    }, 3000);
                 });
             });
 
@@ -295,38 +288,27 @@ require_once "../fetch/my_cases.php";
                 fetch(`../fetch/chat_messages.php?case_number=${caseNumber}`)
                     .then(response => response.json())
                     .then(data => {
-                        chatMessages.innerHTML = ''; // Clear existing messages
+                        chatMessages.innerHTML = '';
 
                         data.forEach(message => {
                             const messageElement = document.createElement('div');
-                            const messageContent = document.createElement('span');
-                            const timeElement = document.createElement('div');
+                            messageElement.classList.add('chat-message');
 
-                            // Set message text
-                            messageContent.textContent = `${message.sender}: ${message.message}`;
-                            timeElement.textContent = message.created_at; // Use formatted time from the backend
-
-                            // Style the timestamp
-                            timeElement.style.fontSize = "12px";
-                            timeElement.style.color = "#888";
-                            timeElement.style.marginTop = "5px"; // Increase margin
-                            timeElement.style.marginLeft = "10px"; // Add left margin for better spacing
-
-                            // Check if the message sender is the logged-in user
                             if (message.sender === "<?= $_SESSION['user_full_name'] ?>") {
                                 messageElement.classList.add('message-sender');
-                                messageContent.classList.add('message-sender-text');
                             } else {
                                 messageElement.classList.add('message-receiver');
-                                messageContent.classList.add('message-receiver-text');
                             }
 
-                            // Append message content and time
-                            messageElement.appendChild(messageContent);
-                            messageElement.appendChild(timeElement);
+                            messageElement.innerHTML = `
+                        <strong>${message.sender}</strong><br>
+                        ${message.message}
+                        <span class="message-time">${message.created_at}</span>
+                    `;
+
                             chatMessages.appendChild(messageElement);
                         });
-                        // Scroll to the bottom of the chat
+
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     })
                     .catch(error => console.error('Error fetching chat messages:', error));
@@ -343,7 +325,6 @@ require_once "../fetch/my_cases.php";
                             },
                             body: JSON.stringify({
                                 case_number: currentCaseNumber,
-                                contact_name: currentContactName,
                                 message: message
                             })
                         })
@@ -358,7 +339,7 @@ require_once "../fetch/my_cases.php";
                 }
             });
 
-            // Stop fetching when the modal is closed
+            // Stop fetching when modal is closed
             document.getElementById('chatModal').addEventListener('hidden.bs.modal', function() {
                 if (chatInterval) clearInterval(chatInterval);
             });

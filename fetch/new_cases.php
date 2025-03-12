@@ -2,7 +2,7 @@
 require_once "../config/database.php";
 
 $getNewCases = mysqli_prepare($connection, "SELECT * FROM cases WHERE case_status = ?");
-$caseStatus = "Open";
+$caseStatus = "New";
 mysqli_stmt_bind_param($getNewCases, "s", $caseStatus);
 mysqli_stmt_execute($getNewCases);
 $getNewCasesResult = mysqli_stmt_get_result($getNewCases);

@@ -45,63 +45,70 @@ require_once "../fetch/product_categories.php";
                         </div>
                     <?php endif; ?>
 
-                    <div class="table-responsive">
-                        <table class="table" id="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Type</th>
-                                    <th>Version</th>
-                                    <th>License Type</th>
-                                    <th>Serial Number</th>
-                                    <th>Support Platform(s)</th>
-                                    <th>License Duration</th>
-                                    <th>Added on</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                foreach ($products as $row) {
-                                    if ($row["status"] == "Active") {
-                                        $status = '<button 
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary"><?= $pageTitle ?> Table</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Type</th>
+                                            <th>Version</th>
+                                            <th>License Type</th>
+                                            <th>Serial Number</th>
+                                            <th>Support Platform(s)</th>
+                                            <th>License Duration</th>
+                                            <th>Added on</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($products as $row) {
+                                            if ($row["status"] == "Active") {
+                                                $status = '<button 
                                         type="button" 
-                                        class="product-action-btn btn text-success" 
+                                        class="product-action-btn btn border border-success text-success" 
                                         data-toggle="modal" 
                                         data-target="#productAction"
                                         data-bs-product-status="' . $row["status"] . '"
                                         data-bs-product-id="' . $row["id"] . '"
                                         data-bs-action="deactivate">' . $row["status"] . '
                                         </button>';
-                                    } else if ($row["status"] == "Deactivated") {
-                                        $status = '<button 
+                                            } else if ($row["status"] == "Deactivated") {
+                                                $status = '<button 
                                         type="button" 
-                                        class="product-action-btn btn text-warning" 
+                                        class="product-action-btn btn border border-warning text-warning" 
                                         data-toggle="modal" 
                                         data-target="#productAction"
                                         data-bs-product-status="' . $row["status"] . '"
                                         data-bs-product-id="' . $row["id"] . '"
                                         data-bs-action="activate">' . $row["status"] . '
                                         </button>';
-                                    }
+                                            }
 
-                                    echo "<tr>";
-                                    echo "<td>" . $row["product_name"] . "</td>";
-                                    echo "<td>" . $row["product_category"] . "</td>";
-                                    echo "<td>" . $row["product_type"] . "</td>";
-                                    echo "<td>" . $row["product_version"] . "</td>";
-                                    echo "<td>" . $row["license_type"] . "</td>";
-                                    echo "<td>" . $row["serial_number"] . "</td>";
-                                    echo "<td>" . $row["supported_platforms"] . "</td>";
-                                    echo "<td>" . $row["license_duration"] . "</td>";
-                                    echo "<td>" . $row["created_at"] . "</td>";
-                                    echo "<td>" . $status . "</td>";
-                                    echo "</tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+                                            echo "<tr>";
+                                            echo "<td>" . $row["product_name"] . "</td>";
+                                            echo "<td>" . $row["product_category"] . "</td>";
+                                            echo "<td>" . $row["product_type"] . "</td>";
+                                            echo "<td>" . $row["product_version"] . "</td>";
+                                            echo "<td>" . $row["license_type"] . "</td>";
+                                            echo "<td>" . $row["serial_number"] . "</td>";
+                                            echo "<td>" . $row["supported_platforms"] . "</td>";
+                                            echo "<td>" . $row["license_duration"] . "</td>";
+                                            echo "<td>" . $row["created_at"] . "</td>";
+                                            echo "<td>" . $status . "</td>";
+                                            echo "</tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /.container-fluid -->

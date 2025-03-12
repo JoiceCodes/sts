@@ -1,6 +1,11 @@
 <?php
 session_start();
-require_once "../config/database.php"; // Adjust path as needed
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../vendor/autoload.php'; // Adjust path as needed
+require_once "../config/database.php"; // Database connection
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $query = "SELECT case_number FROM cases ORDER BY id DESC LIMIT 1";
@@ -8,18 +13,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $last_case_number = intval($row["case_number"]); // Convert to integer
-        $case_number = str_pad($last_case_number + 1, 8, "0", STR_PAD_LEFT); // Ensure 8 digits
+        $last_case_number = intval($row["case_number"]);
+        $case_number = str_pad($last_case_number + 1, 8, "0", STR_PAD_LEFT);
     } else {
-        $case_number = "00000001"; // Start from 00000001 if no cases exist
+        $case_number = "00000001";
     }
 
-    // Get form data
-    // $case_number = trim($_POST["case_number"]);
     $type = trim($_POST["type"]);
     $subject = trim($_POST["subject"]);
     $severity = trim($_POST["severity"]);
-    // $serial_number = trim($_POST["serial_number"]);
     $product_group = trim($_POST["product_group"]);
     $product = trim($_POST["product_name"]);
     $case_owner = $_SESSION["user_id"];
@@ -29,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // File upload settings
     $upload_dir = "../uploads/"; // Ensure this directory exists and is writable
     $allowed_types = ["jpg", "jpeg", "png", "gif", "pdf", "doc", "docx", "mp4", "avi", "mov"];
+    $max_file_size = 10 * 1024 * 1024; // 10MB in bytes
     $attachment_name = "";
 
     if (!empty($_FILES["attachment"]["name"])) {
@@ -42,6 +45,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             die("Error: Invalid file type. Allowed types: " . implode(", ", $allowed_types));
         }
 
+        // Validate file size (10MB limit)
+        if ($file_size > $max_file_size) {
+            die("Error: File size exceeds 10MB limit.");
+        }
+
         // Set unique file name
         $attachment_name = time() . "_" . basename($file_name);
         $upload_path = $upload_dir . $attachment_name;
@@ -52,19 +60,57 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    // Insert into cases table
-    // $query = "INSERT INTO cases (case_number, type, subject, severity, serial_number, product_group, product, attachment)
-    //           VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-    $query = "INSERT INTO cases (case_number, type, subject, severity, product_group, product, company, product_version, case_owner, attachment)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+    // Insert case into database
+    $query = "INSERT INTO cases (case_number, type, subject, severity, product_group, product, company, product_version, case_owner, attachment) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     if ($stmt = $connection->prepare($query)) {
         $stmt->bind_param("ssssssssss", $case_number, $type, $subject, $severity, $product_group, $product, $company, $product_version, $case_owner, $attachment_name);
 
         if ($stmt->execute()) {
-            echo "Success: Case added!";
+            // Fetch case owner details
+            $query_user = "SELECT full_name, email FROM users WHERE id = ?";
+            if ($stmt_user = $connection->prepare($query_user)) {
+                $stmt_user->bind_param("s", $case_owner);
+                $stmt_user->execute();
+                $result_user = $stmt_user->get_result();
+
+                if ($row_user = $result_user->fetch_assoc()) {
+                    $case_owner_name = $row_user["full_name"];
+                    $case_owner_email = $row_user["email"];
+
+                    $emailBody = "Dear $case_owner_name,<br><br> The issue reported has been successfully logged as case #$case_number.<br><br><b> Please Note:</b> Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone.<br><br> Thank you.<br><br><i> Please do not reply to this email. To update your case, click on the direct link to the case.</i>";
+
+                    // Send email notification
+                    $mail = new PHPMailer(true);
+
+                    try {
+                        $mail->isSMTP();
+                        $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
+                        $mail->SMTPAuth = true;
+                        $mail->Username = 'joicebarandon31@gmail.com'; // Your SMTP username
+                        $mail->Password = 'gmbviduachzzyazu'; // Your SMTP password
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                        $mail->Port = 587;
+
+                        $mail->setFrom('joicebarandon31@gmail.com', 'Support Team');
+                        $mail->addAddress($case_owner_email, $case_owner_name);
+
+                        $mail->Subject = "New Case #$case_number Created";
+                        $mail->isHTML(true);
+                        $mail->Body = $emailBody;
+                        $mail->send();
+
+                        $system_name = "System";
+                        $message = strip_tags($emailBody); 
+                        $sendMessage = mysqli_prepare($connection, "INSERT INTO chats (case_number, sender, receiver, message) VALUES (?, ?, ?, ?)");
+                        mysqli_stmt_bind_param($sendMessage, "ssss", $case_number, $system_name, $case_owner_name, $message);
+                        mysqli_stmt_execute($sendMessage);
+                    } catch (Exception $e) {
+                        echo "Error: Could not send email. Mailer Error: {$mail->ErrorInfo}";
+                    }
+                }
+            }
         } else {
             echo "Error: " . $stmt->error;
         }
@@ -76,6 +122,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $connection->close();
-} else {
-    echo "Invalid request.";
 }

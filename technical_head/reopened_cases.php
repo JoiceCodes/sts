@@ -36,47 +36,54 @@ require_once "../fetch/technical_reopened_cases.php";
                             Report</a> -->
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table" id="table">
-                            <thead>
-                                <tr>
-                                    <th>Case Number</th>
-                                    <th>Type</th>
-                                    <th>Subject</th>
-                                    <th>Product Group</th>
-                                    <th>Product</th>
-                                    <th>Product Version</th>
-                                    <th>Severity</th>
-                                    <th>Case Owner</th>
-                                    <th>Company</th>
-                                    <th>Last Modified</th>
-                                    <th>Date & Time Opened</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                foreach ($reopenedCasesTable as $row) {
-                                    $action = '<button type="button" class="badge btn btn-warning"><i class="bi bi-exclamation"></i> Reopen Case</button>';
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary"><?= $pageTitle ?> Table</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Case Number</th>
+                                            <th>Type</th>
+                                            <th>Subject</th>
+                                            <th>Product Group</th>
+                                            <th>Product</th>
+                                            <th>Product Version</th>
+                                            <th>Severity</th>
+                                            <th>Case Owner</th>
+                                            <th>Company</th>
+                                            <th>Last Modified</th>
+                                            <th>Date & Time Opened</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($reopenedCasesTable as $row) {
+                                            $action = '<button type="button" class="badge btn btn-warning"><i class="bi bi-exclamation"></i> Reopen Case</button>';
 
-                                    echo "<tr>";
-                                    echo "<td>" . $row["case_number"] . "</td>";
-                                    echo "<td>" . $row["type"] . "</td>";
-                                    echo "<td>" . $row["subject"] . "</td>";
-                                    echo "<td>" . $row["product_group"] . "</td>";
-                                    echo "<td>" . $row["product"] . "</td>";
-                                    echo "<td>" . $row["product_version"] . "</td>";
-                                    echo "<td>" . $row["severity"] . "</td>";
-                                    echo "<td>" . $row["case_owner"] . "</td>";
-                                    echo "<td>" . $row["company"] . "</td>";
-                                    echo "<td>" . $row["last_modified"] . "</td>";
-                                    echo "<td>" . $row["datetime_opened"] . "</td>";
-                                    echo "<td>$action</td>";
-                                    echo "</tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+                                            echo "<tr>";
+                                            echo "<td>" . $row["case_number"] . "</td>";
+                                            echo "<td>" . $row["type"] . "</td>";
+                                            echo "<td>" . $row["subject"] . "</td>";
+                                            echo "<td>" . $row["product_group"] . "</td>";
+                                            echo "<td>" . $row["product"] . "</td>";
+                                            echo "<td>" . $row["product_version"] . "</td>";
+                                            echo "<td>" . $row["severity"] . "</td>";
+                                            echo "<td>" . $row["case_owner"] . "</td>";
+                                            echo "<td>" . $row["company"] . "</td>";
+                                            echo "<td>" . $row["last_modified"] . "</td>";
+                                            echo "<td>" . $row["datetime_opened"] . "</td>";
+                                            echo "<td>$action</td>";
+                                            echo "</tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /.container-fluid -->

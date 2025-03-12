@@ -43,23 +43,28 @@ require_once "../fetch/engineers.php";
                         </div>
                     <?php endif; ?>
 
-                    <div class="table-responsive">
-                        <table class="table" id="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Username</th>
-                                    <th>Added on</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                foreach ($engineers as $row) {
-                                    switch ($row["account_status"]) {
-                                        case "Active":
-                                            $action = '<button 
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary"><?= $pageTitle ?> Table</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Username</th>
+                                            <th>Added on</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($engineers as $row) {
+                                            switch ($row["account_status"]) {
+                                                case "Active":
+                                                    $action = '<button 
                                             data-bs-user-id="' . $row["id"] . '"
                                             data-bs-user-status="' . $row["account_status"] . '"
                                             data-bs-action="deactivate"
@@ -70,9 +75,9 @@ require_once "../fetch/engineers.php";
                                             <i class="bi bi-exclamation-circle-fill"></i> 
                                             Deactivate
                                             </button>';
-                                            break;
-                                        case "Deactivated":
-                                            $action = '<button 
+                                                    break;
+                                                case "Deactivated":
+                                                    $action = '<button 
                                             data-bs-user-id="' . $row["id"] . '"
                                             data-bs-user-status="' . $row["account_status"] . '"
                                             data-bs-action="activate"
@@ -83,20 +88,22 @@ require_once "../fetch/engineers.php";
                                             <i class="bi bi-check-circle-fill"></i> 
                                             Activate
                                             </button>';
-                                            break;
-                                    }
+                                                    break;
+                                            }
 
-                                    echo "<tr>";
-                                    echo "<td>" . $row["full_name"] . "</td>";
-                                    echo "<td>" . $row["email"] . "</td>";
-                                    echo "<td>" . $row["username"] . "</td>";
-                                    echo "<td>" . $row["created_at"] . "</td>";
-                                    echo "<td>$action</td>";
-                                    echo "</tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+                                            echo "<tr>";
+                                            echo "<td>" . $row["full_name"] . "</td>";
+                                            echo "<td>" . $row["email"] . "</td>";
+                                            echo "<td>" . $row["username"] . "</td>";
+                                            echo "<td>" . $row["created_at"] . "</td>";
+                                            echo "<td>$action</td>";
+                                            echo "</tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /.container-fluid -->

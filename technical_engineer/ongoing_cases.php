@@ -102,30 +102,35 @@ require_once "../fetch/technical_ongoing_cases.php";
                         </div>
                     <?php endif; ?>
 
-                    <div class="table-responsive">
-                        <table class="table" id="table">
-                            <thead>
-                                <tr>
-                                    <th>Case Number</th>
-                                    <th>Type</th>
-                                    <th>Subject</th>
-                                    <th>Product Group</th>
-                                    <th>Product</th>
-                                    <th>Product Version</th>
-                                    <th>Severity</th>
-                                    <th>Case Owner</th>
-                                    <th>Company</th>
-                                    <th>Last Modified</th>
-                                    <th>Date & Time Opened</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                foreach ($ongoingCasesTable as $row) {
-                                    $caseNumber = '<a href="#" class="case-number btn" data-case-id="' . $row["id"] . '" data-case-number="' . $row["case_number"] . '" data-case-owner="' . $row["case_owner"] . '">' . $row["case_number"] . '</a>';
+                    <div class="card shadow mb-4">
+                        <!-- <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary"><?= $pageTitle ?> Table</h6>
+                        </div> -->
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Case Number</th>
+                                            <th>Type</th>
+                                            <th>Subject</th>
+                                            <th>Product Group</th>
+                                            <th>Product</th>
+                                            <th>Product Version</th>
+                                            <th>Severity</th>
+                                            <th>Case Owner</th>
+                                            <th>Company</th>
+                                            <th>Last Modified</th>
+                                            <th>Date & Time Opened</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        foreach ($ongoingCasesTable as $row) {
+                                            $caseNumber = '<a href="#" class="case-number btn" data-case-id="' . $row["id"] . '" data-case-number="' . $row["case_number"] . '" data-case-owner="' . $row["case_owner"] . '">' . $row["case_number"] . '</a>';
 
-                                    $action = '<button 
+                                            $action = '<button 
                                     data-bs-case-number="' . $row["case_number"] . '"
                                     data-bs-reopen="false"
                                     data-toggle="modal"
@@ -136,24 +141,26 @@ require_once "../fetch/technical_ongoing_cases.php";
                                     Mark as Solved
                                     </button>';
 
-                                    echo "<tr>";
-                                    echo "<td>" . $caseNumber . "</td>";
-                                    echo "<td>" . $row["type"] . "</td>";
-                                    echo "<td>" . $row["subject"] . "</td>";
-                                    echo "<td>" . $row["product_group"] . "</td>";
-                                    echo "<td>" . $row["product"] . "</td>";
-                                    echo "<td>" . $row["product_version"] . "</td>";
-                                    echo "<td>" . $row["severity"] . "</td>";
-                                    echo "<td>" . $row["case_owner"] . "</td>";
-                                    echo "<td>" . $row["company"] . "</td>";
-                                    echo "<td>" . $row["last_modified"] . "</td>";
-                                    echo "<td>" . $row["datetime_opened"] . "</td>";
-                                    echo "<td>" . $action . "</td>";
-                                    echo "</tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+                                            echo "<tr>";
+                                            echo "<td>" . $caseNumber . "</td>";
+                                            echo "<td>" . $row["type"] . "</td>";
+                                            echo "<td>" . $row["subject"] . "</td>";
+                                            echo "<td>" . $row["product_group"] . "</td>";
+                                            echo "<td>" . $row["product"] . "</td>";
+                                            echo "<td>" . $row["product_version"] . "</td>";
+                                            echo "<td>" . $row["severity"] . "</td>";
+                                            echo "<td>" . $row["case_owner"] . "</td>";
+                                            echo "<td>" . $row["company"] . "</td>";
+                                            echo "<td>" . $row["last_modified"] . "</td>";
+                                            echo "<td>" . $row["datetime_opened"] . "</td>";
+                                            echo "<td>" . $action . "</td>";
+                                            echo "</tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /.container-fluid -->
