@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2025 at 08:22 AM
+-- Generation Time: Mar 13, 2025 at 02:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -37,9 +37,9 @@ CREATE TABLE `cases` (
   `product` varchar(255) NOT NULL,
   `product_version` varchar(50) NOT NULL,
   `severity` enum('Production System Down','Restricted Operations','Question/Inconvenience','') NOT NULL,
-  `case_status` enum('Open','Waiting in Progress','Closed','Solved') NOT NULL DEFAULT 'Open',
+  `case_status` enum('New','Waiting in Progress','Closed','Solved') NOT NULL DEFAULT 'New',
   `attachment` varchar(255) NOT NULL,
-  `case_owner` varchar(255) NOT NULL,
+  `case_owner` int(11) NOT NULL,
   `company` varchar(255) NOT NULL,
   `last_modified` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `datetime_opened` datetime DEFAULT current_timestamp(),
@@ -51,8 +51,7 @@ CREATE TABLE `cases` (
 --
 
 INSERT INTO `cases` (`id`, `case_number`, `type`, `subject`, `user_id`, `product_group`, `product`, `product_version`, `severity`, `case_status`, `attachment`, `case_owner`, `company`, `last_modified`, `datetime_opened`, `reopen`) VALUES
-(23, '00000001', 'test2', 'Jwjdk', 1, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'Solved', '1741673320_Screenshot_10-3-2025_13329_.jpeg', '3', 'Antivirus Solutions', '2025-03-11 06:52:13', '2025-03-11 14:10:28', 1),
-(25, '00000002', 'test2', 'Jeididmsbsjs', 1, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'Solved', '1741676414_images (1).jpg', '3', 'Antivirus Solutions', '2025-03-11 07:05:31', '2025-03-11 15:00:37', 1);
+(35, '00000001', 'test', 'test', NULL, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'New', '', 3, 'Antivirus Solutions', '2025-03-12 03:59:45', '2025-03-12 11:59:45', 0);
 
 -- --------------------------------------------------------
 
@@ -74,17 +73,7 @@ CREATE TABLE `chats` (
 --
 
 INSERT INTO `chats` (`id`, `case_number`, `sender`, `receiver`, `message`, `created_at`) VALUES
-(74, '00000001', 'Jane Smith', 'John Doe', 'hi', '2025-03-11 06:24:53'),
-(75, '00000001', 'John Doe', 'Jane Smith', 'huhu', '2025-03-11 06:24:59'),
-(76, '00000001', 'Jane Smith', 'John Doe', 'haha', '2025-03-11 06:26:27'),
-(77, '00000001', 'Jane Smith', 'John Doe', 'hehe', '2025-03-11 06:26:48'),
-(78, '00000001', 'John Doe', 'Jane Smith', 'hihi', '2025-03-11 06:26:58'),
-(79, '00000001', 'Pedro Santos', 'Jane Smith', 'Hello, ako \'to', '2025-03-11 06:29:04'),
-(80, '00000001', 'Pedro Santos', 'Jane Smith', 'Eyyy', '2025-03-11 06:29:11'),
-(81, '00000001', 'Pedro Santos', 'Jane Smith', 'yolo', '2025-03-11 06:29:20'),
-(82, '00000001', 'Juan Cruz', 'Jane Smith', 'Eyyyy🤙', '2025-03-11 06:30:23'),
-(83, '00000001', 'Pedro Santos', 'Jane Smith', 'break it down, ‘yo🤘', '2025-03-11 06:30:52'),
-(84, '00000002', 'Jane Smith', 'John Doe', 'hi', '2025-03-11 07:00:57');
+(88, '00000001', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000001. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-12 03:59:50');
 
 -- --------------------------------------------------------
 
@@ -217,7 +206,8 @@ INSERT INTO `users` (`id`, `full_name`, `email`, `username`, `password`, `role`,
 ALTER TABLE `cases`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `case_number` (`case_number`),
-  ADD KEY `fk_cases_user` (`user_id`);
+  ADD KEY `fk_cases_user` (`user_id`),
+  ADD KEY `fk_case_owner` (`case_owner`);
 
 --
 -- Indexes for table `chats`
@@ -261,13 +251,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `cases`
 --
 ALTER TABLE `cases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -301,6 +291,7 @@ ALTER TABLE `users`
 -- Constraints for table `cases`
 --
 ALTER TABLE `cases`
+  ADD CONSTRAINT `fk_case_owner` FOREIGN KEY (`case_owner`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_cases_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
