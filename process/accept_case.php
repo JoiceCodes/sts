@@ -10,6 +10,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $engineerId = $_SESSION["user_id"];
     $caseStatus = "Waiting in Progress";
 
+    $getCaseNumber = mysqli_prepare($connection, "SELECT case_number FROM cases WHERE id = ? LIMIT 1");
+    mysqli_stmt_bind_param($getCaseNumber, "i", $caseId);
+    mysqli_stmt_execute($getCaseNumber);
+    $getCaseNumberResult = mysqli_stmt_get_result($getCaseNumber);
+    if (mysqli_num_rows($getCaseNumberResult) > 0) {
+        $row = mysqli_fetch_assoc($getCaseNumberResult);
+        $caseNumber = $row["case_number"];
+    }
+
     // Update case in database
     $updateCase = mysqli_prepare($connection, "UPDATE cases SET user_id = ?, case_status = ? WHERE id = ?");
     mysqli_stmt_bind_param($updateCase, "isi", $engineerId, $caseStatus, $caseId);
@@ -40,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mail->setFrom('joicebarandon31@gmail.com', 'Technical Support');
         $mail->addAddress($userEmail, $userName);
 
-        $mail->Subject = "Technical Assistance Request Received - Case #$caseId";
+        $mail->Subject = "Technical Assistance Request Received - Case #$caseNumber";
         $mail->isHTML(true);
         $mail->Body = "
             <p>Hello <b>$userName</b>,</p>

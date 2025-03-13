@@ -80,7 +80,7 @@ require_once "../fetch/reopened_cases.php";
                                     data-bs-case-number="' . $row["case_number"] . '"
                                     data-bs-reopen="true"
                                     type="button" 
-                                    class="mark-as-solved-btn btn btn-primary btn-sm" 
+                                    class="mark-as-solved-btn btn badge btn-primary btn-sm" 
                                     data-toggle="modal" 
                                     data-target="#markAsSolved">
                                     <i class="bi bi-check"></i> 

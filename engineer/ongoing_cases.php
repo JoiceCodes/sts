@@ -18,61 +18,53 @@ require_once "../fetch/ongoing_cases.php";
 
 
     <style>
-        /* Styling for chat messages */
-        /* Styling for chat messages */
+        /* Chat Messages Container */
         #chatMessages {
             display: flex;
             flex-direction: column;
             gap: 10px;
             /* Space between messages */
             padding: 10px;
-            /* Add some padding inside the chat container */
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        /* Common message styles */
+        .chat-message {
+            max-width: 80%;
+            word-wrap: break-word;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
         }
 
         /* Sender's message (align to the right) */
         .message-sender {
             align-self: flex-end;
-            /* Align to the right */
-            text-align: right;
-            /* Ensure the text aligns right */
-            margin-bottom: 10px;
-            /* Add spacing below messages */
-        }
-
-        .message-sender-text {
             background-color: #007bff;
             color: white;
-            padding: 10px 15px;
-            border-radius: 15px;
-            max-width: 60%;
-            /* Limit the width */
-            word-wrap: break-word;
-            /* Ensure long words wrap */
-            margin-bottom: 5px;
-            /* Add spacing between text blocks */
+            text-align: left;
         }
 
         /* Receiver's message (align to the left) */
         .message-receiver {
             align-self: flex-start;
-            /* Align to the left */
-            text-align: left;
-            /* Ensure the text aligns left */
-            margin-bottom: 10px;
-            /* Add spacing below messages */
-        }
-
-        .message-receiver-text {
             background-color: #f1f1f1;
             color: black;
-            padding: 10px 15px;
-            border-radius: 15px;
-            max-width: 60%;
-            /* Limit the width */
-            word-wrap: break-word;
-            /* Ensure long words wrap */
-            margin-bottom: 5px;
-            /* Add spacing between text blocks */
+            text-align: left;
+        }
+
+        /* Timestamp styling */
+        .message-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: right;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .message-receiver .message-time {
+            color: rgba(0, 0, 0, 0.6);
         }
     </style>
 </head>
@@ -140,7 +132,7 @@ require_once "../fetch/ongoing_cases.php";
                                     data-bs-case-number="' . $row["case_number"] . '"
                                     data-bs-reopen="false"
                                     type="button" 
-                                    class="mark-as-solved-btn btn btn-primary btn-sm" 
+                                    class="mark-as-solved-btn btn badge btn-primary btn-sm" 
                                     data-toggle="modal" 
                                     data-target="#markAsSolved">
                                     <i class="bi bi-check"></i> 
@@ -286,38 +278,27 @@ require_once "../fetch/ongoing_cases.php";
                 fetch(`../fetch/chat_messages.php?case_number=${caseNumber}`)
                     .then(response => response.json())
                     .then(data => {
-                        chatMessages.innerHTML = ''; // Clear existing messages
+                        chatMessages.innerHTML = '';
 
                         data.forEach(message => {
                             const messageElement = document.createElement('div');
-                            const messageContent = document.createElement('span');
-                            const timeElement = document.createElement('div');
+                            messageElement.classList.add('chat-message');
 
-                            // Set message text
-                            messageContent.textContent = `${message.sender}: ${message.message}`;
-                            timeElement.textContent = message.created_at; // Use formatted time from the backend
-
-                            // Style the timestamp
-                            timeElement.style.fontSize = "12px";
-                            timeElement.style.color = "#888";
-                            timeElement.style.marginTop = "5px"; // Increase margin
-                            timeElement.style.marginLeft = "10px"; // Add left margin for better spacing
-
-                            // Check if the message sender is the logged-in user
                             if (message.sender === "<?= $_SESSION['user_full_name'] ?>") {
                                 messageElement.classList.add('message-sender');
-                                messageContent.classList.add('message-sender-text');
                             } else {
                                 messageElement.classList.add('message-receiver');
-                                messageContent.classList.add('message-receiver-text');
                             }
 
-                            // Append message content and time
-                            messageElement.appendChild(messageContent);
-                            messageElement.appendChild(timeElement);
+                            messageElement.innerHTML = `
+                        <strong>${message.sender}</strong><br>
+                        ${message.message}
+                        <span class="message-time">${message.created_at}</span>
+                    `;
+
                             chatMessages.appendChild(messageElement);
                         });
-                        // Scroll to the bottom of the chat
+
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     })
                     .catch(error => console.error('Error fetching chat messages:', error));

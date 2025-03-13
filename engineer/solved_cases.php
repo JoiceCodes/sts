@@ -78,7 +78,7 @@ require_once "../fetch/solved_cases.php";
                                             $action = '<button 
                                     data-bs-case-number="' . $row["case_number"] . '"
                                     type="button" 
-                                    class="reopen-case-btn btn btn-warning" 
+                                    class="reopen-case-btn btn badge btn-warning" 
                                     data-toggle="modal" 
                                     data-target="#reopenCase">
                                     <i class="bi bi-exclamation"></i> 

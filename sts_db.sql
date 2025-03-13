@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2025 at 02:26 AM
+-- Generation Time: Mar 13, 2025 at 08:58 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,7 +51,11 @@ CREATE TABLE `cases` (
 --
 
 INSERT INTO `cases` (`id`, `case_number`, `type`, `subject`, `user_id`, `product_group`, `product`, `product_version`, `severity`, `case_status`, `attachment`, `case_owner`, `company`, `last_modified`, `datetime_opened`, `reopen`) VALUES
-(35, '00000001', 'test', 'test', NULL, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'New', '', 3, 'Antivirus Solutions', '2025-03-12 03:59:45', '2025-03-12 11:59:45', 0);
+(35, '00000001', 'test', 'test', 1, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'Waiting in Progress', '', 3, 'Antivirus Solutions', '2025-03-13 05:40:37', '2025-03-12 11:59:45', 0),
+(36, '00000002', 'test', 'Jsksmslsksn', 1, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'Waiting in Progress', '', 3, 'Antivirus Solutions', '2025-01-13 02:26:13', '2025-03-13 10:19:00', 1),
+(37, '00000003', 'test3', 'Jejdidksns', 1, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Restricted Operations', 'Waiting in Progress', '', 3, 'Antivirus Solutions', '2024-11-13 02:25:50', '2025-03-13 10:24:13', 0),
+(38, '00000004', 'test4', 'Wjdjwndms', 1, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Question/Inconvenience', 'Solved', '', 3, 'Antivirus Solutions', '2024-12-13 02:26:47', '2025-03-13 10:24:37', 0),
+(39, '00000005', 'test5', 'test', NULL, 'XYZ Corporation', 'v12.5', 'SecureDefender Antivirus Pro', 'Production System Down', 'New', '', 3, 'Antivirus Solutions', '2025-02-13 02:59:44', '2025-03-13 10:59:44', 0);
 
 -- --------------------------------------------------------
 
@@ -73,7 +77,14 @@ CREATE TABLE `chats` (
 --
 
 INSERT INTO `chats` (`id`, `case_number`, `sender`, `receiver`, `message`, `created_at`) VALUES
-(88, '00000001', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000001. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-12 03:59:50');
+(88, '00000001', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000001. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-12 03:59:50'),
+(89, '00000001', 'Jane Smith', 'System', 'est', '2025-03-13 01:33:46'),
+(90, '00000001', 'Jane Smith', 'System', 'Test', '2025-03-13 01:33:50'),
+(91, '00000002', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000002. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-13 02:19:05'),
+(92, '00000003', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000003. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-13 02:24:17'),
+(93, '00000004', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000004. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-13 02:24:42'),
+(94, '00000004', 'Jane Smith', 'John Doe', 'eyy', '2025-03-13 02:27:53'),
+(95, '00000005', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000005. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-13 02:59:48');
 
 -- --------------------------------------------------------
 
@@ -251,13 +262,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `cases`
 --
 ALTER TABLE `cases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- AUTO_INCREMENT for table `products`

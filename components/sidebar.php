@@ -72,6 +72,11 @@
                 <i class="bi bi-terminal<?= $pageTitle == "Products" ? "-fill" : "" ?>"></i>
                 <span>Products</span></a>
         </li>
+        <li class="nav-item <?= $pageTitle == "Reports" ? "active" : "" ?>">
+            <a class="nav-link" href="reports_table.php">
+                <i class="bi bi-clipboard-data<?= $pageTitle == "Reports" ? "-fill" : "" ?>"></i>
+                <span>Reports</span></a>
+        </li>
     <?php endif; ?>
 
     <!-- Divider -->
@@ -104,6 +109,14 @@
             <i class="bi bi-bag<?= $pageTitle == "All Purchased Products" ? "-fill" : "" ?>"></i>
             <span>All Purchased Products</span></a>
     </li>
+
+    <?php if ($_SESSION["user_role"] === "User"): ?>
+        <li class="nav-item <?= $pageTitle == "Knowledge Base" ? "active" : "" ?>">
+            <a class="nav-link" href="knowledge_base.php">
+                <i class="bi bi-database<?= $pageTitle == "Knowledge Base" ? "-fill" : "" ?>"></i>
+                <span>Knowledge Base</span></a>
+        </li>
+    <?php endif; ?>
 
     <li class="nav-item <?= $pageTitle == "About" ? "active" : "" ?>">
         <a class="nav-link" href="about.php">

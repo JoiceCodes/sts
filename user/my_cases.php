@@ -109,11 +109,11 @@ require_once "../fetch/my_cases.php";
                                             <th>Case Number</th>
                                             <th>Type</th>
                                             <th>Subject</th>
+                                            <th>Contact Name</th>
                                             <th>Product Group</th>
                                             <th>Product</th>
                                             <th>Product Version</th>
                                             <th>Severity</th>
-                                            <th>Case Owner</th>
                                             <th>Company</th>
                                             <th>Case Status</th>
                                             <th>Attachment</th>
@@ -158,11 +158,11 @@ require_once "../fetch/my_cases.php";
                                             echo "<td>" . $caseNumber . "</td>";
                                             echo "<td>" . $row["type"] . "</td>";
                                             echo "<td>" . $row["subject"] . "</td>";
+                                            echo "<td>" . $row["full_name"] . "</td>";
                                             echo "<td>" . $row["product_group"] . "</td>";
                                             echo "<td>" . $row["product"] . "</td>";
                                             echo "<td>" . $row["product_version"] . "</td>";
                                             echo "<td>" . $row["severity"] . "</td>";
-                                            echo "<td>" . $row["case_owner"] . "</td>";
                                             echo "<td>" . $row["company"] . "</td>";
                                             echo "<td>" . $row["case_status"] . "</td>";
                                             echo "<td>";
@@ -225,7 +225,7 @@ require_once "../fetch/my_cases.php";
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="sendMessage">Send</button>
+                    <button type="button" class="btn btn-primary" id="sendMessage"><i class="bi bi-send-fill"></i> Send</button>
                 </div>
             </div>
         </div>
@@ -255,7 +255,9 @@ require_once "../fetch/my_cases.php";
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
 
     <script>
-        new DataTable('#table');
+        new DataTable('#table', {
+            responsive: true
+        });
     </script>
 
     <script>
@@ -265,6 +267,7 @@ require_once "../fetch/my_cases.php";
             const chatInput = document.getElementById('chatInput');
             const sendMessageButton = document.getElementById('sendMessage');
             let currentCaseNumber = null;
+            let currentContactName = null;
             let chatInterval = null;
 
             // Event listener for case number clicks
@@ -272,6 +275,13 @@ require_once "../fetch/my_cases.php";
                 item.addEventListener('click', function(event) {
                     event.preventDefault();
                     currentCaseNumber = this.getAttribute('data-case-number');
+                    currentContactName = this.getAttribute("data-contact-name");
+
+                    if (!currentContactName) {
+                        sendMessageButton.disabled = true;
+                    } else {
+                        sendMessageButton.disabled = false;
+                    }
 
                     fetchChatMessages(currentCaseNumber);
                     chatModal.show();
@@ -325,6 +335,7 @@ require_once "../fetch/my_cases.php";
                             },
                             body: JSON.stringify({
                                 case_number: currentCaseNumber,
+                                user_id: currentContactName,
                                 message: message
                             })
                         })
