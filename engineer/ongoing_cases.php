@@ -119,7 +119,6 @@ require_once "../fetch/ongoing_cases.php";
                                             <th>Case Owner</th>
                                             <th>Company</th>
                                             <th>Last Modified</th>
-                                            <th>Date & Time Opened</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -129,16 +128,31 @@ require_once "../fetch/ongoing_cases.php";
                                             $caseNumber = '<a href="#" class="case-number btn" data-case-id="' . $row["id"] . '" data-case-number="' . $row["case_number"] . '" data-case-owner="' . $row["case_owner"] . '">' . $row["case_number"] . '</a>';
 
                                             $action = '<button 
-                                    data-bs-case-number="' . $row["case_number"] . '"
-                                    data-bs-reopen="false"
-                                    type="button" 
-                                    class="mark-as-solved-btn btn badge btn-primary btn-sm" 
-                                    data-toggle="modal" 
-                                    data-target="#markAsSolved">
-                                    <i class="bi bi-check"></i> 
-                                    Mark as Solved
-                                    </button>';
+                                            data-bs-case-number="' . $row["case_number"] . '"
+                                            data-bs-reopen="false"
+                                            type="button" 
+                                            class="mark-as-solved-btn btn badge btn-primary btn-sm" 
+                                            data-toggle="modal" 
+                                            data-target="#markAsSolved">
+                                            <i class="bi bi-check"></i> 
+                                            Mark as Solved
+                                            </button>';
 
+                                            if ($row["severity"] == "Production System Down") {
+                                                $escalateSeverity = "";
+                                            } else {
+                                                $escalateSeverity = '<button 
+                                                data-bs-case-id="' . $row["id"] . '"
+                                                data-bs-severity="' . $row["severity"] . '"
+                                                data-bs-reopen="false"
+                                                type="button" 
+                                                class="escalate-severity-btn btn badge btn-warning btn-sm" 
+                                                data-toggle="modal" 
+                                                data-target="#escalateSeverity">
+                                                <i class="bi bi-exclamation"></i> 
+                                                Escalate Issue
+                                                </button>';
+                                            }
 
                                             echo "<tr>";
                                             echo "<td>" . $caseNumber . "</td>";
@@ -147,11 +161,10 @@ require_once "../fetch/ongoing_cases.php";
                                             echo "<td>" . $row["product_group"] . "</td>";
                                             echo "<td>" . $row["product"] . "</td>";
                                             echo "<td>" . $row["product_version"] . "</td>";
-                                            echo "<td>" . $row["severity"] . "</td>";
+                                            echo "<td>" . $row["severity"] . $escalateSeverity . "</td>";
                                             echo "<td>" . $row["case_owner"] . "</td>";
                                             echo "<td>" . $row["company"] . "</td>";
                                             echo "<td>" . $row["last_modified"] . "</td>";
-                                            echo "<td>" . $row["datetime_opened"] . "</td>";
                                             echo "<td>" . $action . "</td>";
                                             echo "</tr>";
                                         }
@@ -182,6 +195,7 @@ require_once "../fetch/ongoing_cases.php";
     <!-- Logout Modal-->
     <?php include_once "../modals/logout.php" ?>
     <?php include_once "../modals/mark_as_solved.php" ?>
+    <?php include_once "../modals/escalate_severity.php" ?>
 
     <!-- Chat Modal -->
     <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
@@ -218,11 +232,11 @@ require_once "../fetch/ongoing_cases.php";
     <script src="../js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="../vendor/chart.js/Chart.min.js"></script>
+    <!-- <script src="../vendor/chart.js/Chart.min.js"></script> -->
 
     <!-- Page level custom scripts -->
-    <script src="../js/demo/chart-area-demo.js"></script>
-    <script src="../js/demo/chart-pie-demo.js"></script>
+    <!-- <script src="../js/demo/chart-area-demo.js"></script>
+    <script src="../js/demo/chart-pie-demo.js"></script> -->
 
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
@@ -243,7 +257,55 @@ require_once "../fetch/ongoing_cases.php";
                     isReopenHidden.value = this.getAttribute("data-bs-reopen");
                 });
             });
+
+            const caseIdHidden = document.getElementById("caseId");
+            const severitySelect = document.getElementById("severity");
+
+            document.querySelectorAll('.escalate-severity-btn').forEach(item => {
+                item.addEventListener('click', function(event) {
+                    severitySelect.innerHTML = '<option value="" selected disabled>--Select Severity--</option>';
+
+                    caseIdHidden.value = this.getAttribute("data-bs-case-id");
+                    let severity = this.getAttribute("data-bs-severity");
+
+                    switch (severity) {
+                        case "Question/Inconvenience":
+                            addOption(severitySelect, "Production System Down", "1 - Production System Down");
+                            addOption(severitySelect, "Restricted Operations", "2 - Restricted Operations");
+                            break;
+                        case "Restricted Operations":
+                            addOption(severitySelect, "Production System Down", "1 - Production System Down");
+                            break;
+                        default:
+                            console.warn("Unknown severity:", severity);
+                            break;
+                    }
+
+                    // for (let i = 0; i < severitySelect.options.length; i++) {
+                    //     switch (severity) {
+                    //         case "Question/Inconvenience":
+                    //             addOption(severitySelect, "Production System Down", "1 - Production System Down");
+                    //             addOption(severitySelect, "Restricted Operations", "2 - Restricted Operations");
+                    //             break;
+                    //         case "Restricted Operations":
+                    //             addOption(severitySelect, "Production System Down", "1 - Production System Down");
+                    //             break;
+                    //         default:
+                    //             console.warn("Unknown severity:", severity);
+                    //             break;
+                    //     }
+                    // }
+                });
+            });
         });
+
+        // Helper function to add options to the select element
+        function addOption(selectElement, value, text) {
+            const option = document.createElement("option");
+            option.value = value;
+            option.text = text;
+            selectElement.add(option);
+        }
     </script>
 
     <script>

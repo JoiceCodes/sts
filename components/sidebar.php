@@ -22,10 +22,27 @@
     <!-- <div class="sidebar-heading">Cases Overview</div> -->
     <?php $myCasesPages = ["New Cases", "On-going Cases", "Solved Cases", "Reopened Cases"]; ?>
     <?php if ($_SESSION["user_role"] === "User"): ?>
-        <li class="nav-item <?= $pageTitle == "My Cases" ? "active" : "" ?>">
+        <!-- <li class="nav-item <?= $pageTitle == "My Cases" ? "active" : "" ?>">
             <a class="nav-link" href="my_cases.php">
                 <i class="bi bi-briefcase<?= $pageTitle == "My Cases" ? "-fill" : "" ?>"></i>
                 <span>My Cases</span></a>
+        </li> -->
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item <?= !in_array($pageTitle, $myCasesPages) ? "" : "active" ?>">
+            <a class="nav-link <?= !in_array($pageTitle, $myCasesPages) ? "collapsed" : "" ?>" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="<?= !in_array($pageTitle, $myCasesPages) ? "false" : "true" ?>"
+                aria-controls="collapseTwo">
+                <i class="bi bi-briefcase<?= !in_array($pageTitle, $myCasesPages) ? "" : "-fill" ?>"></i>
+                <span>My Cases</span>
+            </a>
+            <div id="collapseTwo" class="collapse <?= !in_array($pageTitle, $myCasesPages) ? "" : "show" ?>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Menu:</h6>
+                    <a class="collapse-item <?= $pageTitle == "New Cases" ? "bg-primary text-white" : ""  ?>" href="new_cases.php">New</a>
+                    <a class="collapse-item <?= $pageTitle == "On-going Cases" ? "bg-primary text-white" : ""  ?>" href="ongoing_cases.php">On-going</a>
+                    <a class="collapse-item <?= $pageTitle == "Solved Cases" ? "bg-primary text-white" : ""  ?>" href="solved_cases.php">Solved</a>
+                    <a class="collapse-item <?= $pageTitle == "Reopened Cases" ? "bg-primary text-white" : ""  ?>" href="reopened_cases.php">Reopened</a>
+                </div>
+            </div>
         </li>
     <?php elseif ($_SESSION["user_role"] === "Engineer"): ?>
         <!-- Nav Item - Pages Collapse Menu -->

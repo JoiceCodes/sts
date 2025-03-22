@@ -15,8 +15,8 @@ require_once "../fetch/reopened_cases_by_user.php";
 </head>
 
 <body id="page-top">
-    <!-- Page Wrapper -->
-    <div id="wrapper">
+     <!-- Page Wrapper -->
+     <div id="wrapper">
         <!-- Sidebar -->
         <?php include_once "../components/sidebar.php" ?>
         <!-- End of Sidebar -->
@@ -39,6 +39,7 @@ require_once "../fetch/reopened_cases_by_user.php";
                             Report</a> -->
                     </div>
 
+
                     <!-- Content Row -->
                     <div class="row">
                         <!-- Earnings (Monthly) Card Example -->
@@ -48,7 +49,7 @@ require_once "../fetch/reopened_cases_by_user.php";
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                New Cases
+                                                <a class="text-primary" href="new_cases.php">New Cases</a>
                                             </div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                                 <?= $totalNewCases ?>
@@ -69,7 +70,7 @@ require_once "../fetch/reopened_cases_by_user.php";
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Ongoing Cases
+                                                 <a class="text-success" href="ongoing_cases.php">Ongoing Cases</a>
                                             </div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                                 <?= $totalOngoingCases ?>
@@ -90,7 +91,7 @@ require_once "../fetch/reopened_cases_by_user.php";
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Solved Cases
+                                                <a class="text-info" href="solved_cases.php">Solved Cases</a>
                                             </div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                                 <?= $totalSolvedCases ?>
@@ -111,7 +112,7 @@ require_once "../fetch/reopened_cases_by_user.php";
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Reopened Cases
+                                                <a class="text-warning" href="reopened_cases.php">Reopened Cases</a>
                                             </div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                                 <?= $totalReopenedCases ?>

@@ -1,3 +1,27 @@
+<?php 
+session_start();
+
+if (isset($_SESSION["user_id"])) {
+    switch ($_SESSION["user_role"]) {
+        case "User":
+            $folder = "user";
+            break;
+        case "Engineer":
+            $folder = "engineer";
+            break;
+        case "Technical Engineer":
+            $folder = "technical_engineer";
+            break;
+        case "Technical Head":
+            $folder = "technical_head";
+            break;
+    }
+
+    header("Location: $folder/home.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,6 +67,9 @@
                                         <h1 class="h4 text-gray-900 mb-4">Welcome to i-Secure Networks and Business Solutions, Inc.!</h1>
                                     </div>
                                     <form class="user needs-validation" novalidate action="process/login.php" method="post">
+                                        <?php if (isset($_GET["rate"]) && $_GET["rate"] === "1"): ?>
+                                            <input type="hidden" name="rate" value="<?= $_GET["rate"] ?>">    
+                                        <?php endif; ?>
                                         <div class="form-group">
                                             <!-- <input type="email" class="form-control form-control-user"
                                                 id="exampleInputEmail" aria-describedby="emailHelp"
@@ -75,7 +102,7 @@
                                             <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
                                         </a> -->
                                     </form>
-                                    <hr>
+                                
                                     <div class="text-center">
                                         <a class="small" href="forgot-password.html">Forgot Password?</a>
                                     </div>

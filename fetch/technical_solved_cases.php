@@ -1,7 +1,26 @@
 <?php
 require_once "../config/database.php";
 
-$getSolvedCases = mysqli_prepare($connection, "SELECT * FROM cases WHERE case_status = ?");
+$getSolvedCases = mysqli_prepare($connection, "SELECT 
+c.id,
+c.case_number,
+c.type,
+c.subject,
+c.product_group,
+c.product,
+c.product_version,
+c.severity,
+c.case_status,
+c.attachment,
+c.company,
+c.last_modified,
+c.datetime_opened,
+c.reopen,
+u.full_name AS case_owner
+
+FROM cases AS c
+LEFT JOIN users AS u ON c.case_owner = u.id
+WHERE case_status = ?");
 $caseStatus = "Solved";
 mysqli_stmt_bind_param($getSolvedCases, "s", $caseStatus);
 mysqli_stmt_execute($getSolvedCases);
@@ -15,5 +34,5 @@ if (mysqli_num_rows($getSolvedCasesResult) > 0) {
         $row["datetime_opened"] = date("F j, Y h:i:s A", strtotime($row["datetime_opened"]));
         $row["reopen"] = $row["reopen"] . " time(s)";
         $solvedCasesTable[] = $row;
-    }   
+    }
 }

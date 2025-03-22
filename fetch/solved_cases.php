@@ -1,7 +1,26 @@
 <?php
 require_once "../config/database.php";
 
-$getSolvedCases = mysqli_prepare($connection, "SELECT * FROM cases WHERE case_status = ? AND user_id = ?");
+$getSolvedCases = mysqli_prepare($connection, "SELECT 
+c.id,
+c.case_number,
+c.type,
+c.subject,
+c.product_group,
+c.product,
+c.product_version,
+c.severity,
+c.case_status,
+c.attachment,
+c.company,
+c.last_modified,
+c.datetime_opened,
+c.reopen,
+u.full_name AS case_owner
+
+FROM cases AS c
+LEFT JOIN users AS u ON c.case_owner = u.id
+WHERE case_status = ? AND user_id = ?");
 $caseStatus = "Solved";
 mysqli_stmt_bind_param($getSolvedCases, "si", $caseStatus, $_SESSION["user_id"]);
 mysqli_stmt_execute($getSolvedCases);
