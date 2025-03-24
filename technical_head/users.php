@@ -37,9 +37,25 @@ require_once "../fetch/users.php";
                             Report</a> -->
                     </div>
 
+                    <div class="my-3 d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newUser">+ New User</button>
+                    </div>
+
                     <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <i class="bi bi-check-circle-fill"></i> Account status updated successfully!
+                        </div>
+                    <?php elseif (isset($_GET["add"]) && $_GET["add"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> Account added successfully!
+                        </div>
+                    <?php elseif (isset($_GET["empty"]) && $_GET["empty"] === "1"): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-x-circle-fill"></i> Inputs are empty!
+                        </div>
+                    <?php elseif (isset($_GET["no_match"]) && $_GET["no_match"] === "1"): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-x-circle-fill"></i> Passwords do not match!
                         </div>
                     <?php endif; ?>
 
@@ -127,6 +143,8 @@ require_once "../fetch/users.php";
     <?php include_once "../modals/logout.php" ?>
 
     <?php include_once "../modals/user_action.php" ?>
+    <?php include_once "../modals/add_user.php" ?>
+
 
 
     <!-- Bootstrap core JavaScript-->

@@ -43,6 +43,10 @@ require_once "../fetch/new_cases_table_user.php";
                                 Report</a> -->
                     </div>
 
+                    <div class="my-3 d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCase">+ New Case</button>
+                    </div>
+
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary"><?= $pageTitle ?> Table</h6>
@@ -107,7 +111,7 @@ require_once "../fetch/new_cases_table_user.php";
     <!-- Logout Modal-->
     <?php include_once "../modals/logout.php" ?>
 
-    <?php include_once "../modals/accept_case_confirmation.php" ?>
+    <?php include_once "../modals/new_case.php" ?>
 
     <!-- Bootstrap core JavaScript-->
     <script src="../vendor/jquery/jquery.min.js"></script>

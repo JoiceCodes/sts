@@ -37,9 +37,25 @@ require_once "../fetch/engineers.php";
                             Report</a> -->
                     </div>
 
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#newEngineer">+ New Engineer</button>
+                    </div>
+
                     <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <i class="bi bi-check-circle-fill"></i> Account status updated successfully!
+                        </div>
+                    <?php elseif (isset($_GET["add"]) && $_GET["add"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> Account added successfully!
+                        </div>
+                    <?php elseif (isset($_GET["empty"]) && $_GET["empty"] === "1"): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-x-circle-fill"></i> Inputs are empty!
+                        </div>
+                    <?php elseif (isset($_GET["no_match"]) && $_GET["no_match"] === "1"): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-x-circle-fill"></i> Passwords do not match!
                         </div>
                     <?php endif; ?>
 
@@ -127,6 +143,8 @@ require_once "../fetch/engineers.php";
     <?php include_once "../modals/logout.php" ?>
 
     <?php include_once "../modals/user_action.php" ?>
+
+    <?php include_once "../modals/add_engineer.php" ?>
 
     <!-- Bootstrap core JavaScript-->
     <script src="../vendor/jquery/jquery.min.js"></script>
