@@ -47,6 +47,12 @@ require_once "../fetch/new_cases_table_user.php";
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCase">+ New Case</button>
                     </div>
 
+                    <?php if (isset($_GET["success"]) && $_GET["success"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> New case submitted successfully!
+                        </div>
+                    <?php endif; ?>
+
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary"><?= $pageTitle ?> Table</h6>

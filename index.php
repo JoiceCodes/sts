@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_SESSION["user_id"])) {
@@ -66,9 +66,16 @@ if (isset($_SESSION["user_id"])) {
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome to i-Secure Networks and Business Solutions, Inc.!</h1>
                                     </div>
+
+                                    <?php if (isset($_GET["password_reset"]) && $_GET["password_reset"] === "1"): ?>
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <i class="bi bi-check-circle-fill"></i> Your new password has been set successfully!
+                                        </div>
+                                    <?php endif; ?>
+
                                     <form class="user needs-validation" novalidate action="process/login.php" method="post">
                                         <?php if (isset($_GET["rate"]) && $_GET["rate"] === "1"): ?>
-                                            <input type="hidden" name="rate" value="<?= $_GET["rate"] ?>">    
+                                            <input type="hidden" name="rate" value="<?= $_GET["rate"] ?>">
                                         <?php endif; ?>
                                         <div class="form-group">
                                             <!-- <input type="email" class="form-control form-control-user"
@@ -102,12 +109,12 @@ if (isset($_SESSION["user_id"])) {
                                             <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
                                         </a> -->
                                     </form>
-                                
+
                                     <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Forgot Password?</a>
+                                        <a class="small" href="forgot-password.php">Forgot Password?</a>
                                     </div>
                                     <div class="text-center">
-                                        <a class="small" href="register.html">Create an Account!</a>
+                                        <a class="small" href="register.php">Create an Account!</a>
                                     </div>
                                 </div>
                             </div>
