@@ -98,6 +98,10 @@ require_once "../fetch/ongoing_cases.php";
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <i class="bi bi-check-circle-fill"></i> Case solved successfully! Go to <a href="solved_cases.php">Solved Cases</a>.
                         </div>
+                    <?php if (isset($_GET["escalate_severity"]) && $_GET["escalate_severity"] === "1"): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill"></i> Case severity escalated successfully!
+                        </div>
                     <?php endif; ?>
 
                     <div class="card shadow mb-4">
