@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2025 at 08:58 AM
+-- Generation Time: Mar 25, 2025 at 03:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -85,6 +85,21 @@ INSERT INTO `chats` (`id`, `case_number`, `sender`, `receiver`, `message`, `crea
 (93, '00000004', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000004. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-13 02:24:42'),
 (94, '00000004', 'Jane Smith', 'John Doe', 'eyy', '2025-03-13 02:27:53'),
 (95, '00000005', 'System', 'Jane Smith', 'Dear Jane Smith, The issue reported has been successfully logged as case #00000005. Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone. Thank you. Please do not reply to this email. To update your case, click on the direct link to the case.', '2025-03-13 02:59:48');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forgot_password_requests`
+--
+
+CREATE TABLE `forgot_password_requests` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `reset_token` varchar(255) NOT NULL,
+  `request_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  `expiry_time` datetime DEFAULT NULL,
+  `is_used` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -227,6 +242,13 @@ ALTER TABLE `chats`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `forgot_password_requests`
+--
+ALTER TABLE `forgot_password_requests`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
@@ -271,6 +293,12 @@ ALTER TABLE `chats`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
+-- AUTO_INCREMENT for table `forgot_password_requests`
+--
+ALTER TABLE `forgot_password_requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
@@ -292,7 +320,7 @@ ALTER TABLE `product_types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
@@ -304,6 +332,12 @@ ALTER TABLE `users`
 ALTER TABLE `cases`
   ADD CONSTRAINT `fk_case_owner` FOREIGN KEY (`case_owner`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_cases_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `forgot_password_requests`
+--
+ALTER TABLE `forgot_password_requests`
+  ADD CONSTRAINT `forgot_password_requests_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `product_types`
