@@ -142,10 +142,7 @@ require_once "../fetch/ongoing_cases.php";
                                             Mark as Solved
                                             </button>';
 
-                                            if ($row["severity"] == "Production System Down") {
-                                                $escalateSeverity = "";
-                                            } else {
-                                                $escalateSeverity = '<button 
+                                            $escalateSeverity = '<button 
                                                 data-bs-case-id="' . $row["id"] . '"
                                                 data-bs-severity="' . $row["severity"] . '"
                                                 data-bs-reopen="false"
@@ -156,7 +153,7 @@ require_once "../fetch/ongoing_cases.php";
                                                 <i class="bi bi-exclamation"></i> 
                                                 Escalate Issue
                                                 </button>';
-                                            }
+
 
                                             echo "<tr>";
                                             echo "<td>" . $caseNumber . "</td>";
