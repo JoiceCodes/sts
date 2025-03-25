@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../config.php";
+require_once "../config/database.php";
 
 switch ($_SESSION["user_role"]) {
     case "Technical Engineer":
