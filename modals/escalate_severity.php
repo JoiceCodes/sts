@@ -13,7 +13,12 @@
                     <input type="hidden" name="case_id" id="caseId">
                     <div class="mb-3">
                         <label for="severity">Severity</label>
-                        <select name="severity" required id="severity" class="form-control"></select>
+                        <select name="severity" required id="severity" class="form-control">
+                            <option value="" selected disabled>-- Select Severity --</option>
+                            <option value="Production System Down">1 - Production System Down</option>
+                            <option value="Restricted Operations">2 - Restricted Operations</option>
+                            <option value="Question/Inconvenience">3 - Question/Inconvenience</option>
+                        </select>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

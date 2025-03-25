@@ -259,27 +259,24 @@ require_once "../fetch/ongoing_cases.php";
             });
 
             const caseIdHidden = document.getElementById("caseId");
-            const severitySelect = document.getElementById("severity");
 
             document.querySelectorAll('.escalate-severity-btn').forEach(item => {
                 item.addEventListener('click', function(event) {
-                    severitySelect.innerHTML = '<option value="" selected disabled>--Select Severity--</option>';
 
                     caseIdHidden.value = this.getAttribute("data-bs-case-id");
-                    let severity = this.getAttribute("data-bs-severity");
 
-                    switch (severity) {
-                        case "Question/Inconvenience":
-                            addOption(severitySelect, "Production System Down", "1 - Production System Down");
-                            addOption(severitySelect, "Restricted Operations", "2 - Restricted Operations");
-                            break;
-                        case "Restricted Operations":
-                            addOption(severitySelect, "Production System Down", "1 - Production System Down");
-                            break;
-                        default:
-                            console.warn("Unknown severity:", severity);
-                            break;
-                    }
+                    // switch (severity) {
+                    //     case "Question/Inconvenience":
+                    //         addOption(severitySelect, "Production System Down", "1 - Production System Down");
+                    //         addOption(severitySelect, "Restricted Operations", "2 - Restricted Operations");
+                    //         break;
+                    //     case "Restricted Operations":
+                    //         addOption(severitySelect, "Production System Down", "1 - Production System Down");
+                    //         break;
+                    //     default:
+                    //         console.warn("Unknown severity:", severity);
+                    //         break;
+                    // }
 
                     // for (let i = 0; i < severitySelect.options.length; i++) {
                     //     switch (severity) {
