@@ -71,6 +71,10 @@ if (isset($_SESSION["user_id"])) {
                                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                                             <i class="bi bi-check-circle-fill"></i> Your new password has been set successfully!
                                         </div>
+                                    <?php elseif (isset($_GET["register"]) && $_GET["register"] === "1"): ?>
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            <i class="bi bi-check-circle-fill"></i> You have successfully created your account!
+                                        </div>
                                     <?php endif; ?>
 
                                     <form class="user needs-validation" novalidate action="process/login.php" method="post">

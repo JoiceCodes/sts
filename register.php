@@ -37,35 +37,47 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                             </div>
-                            <form class="user">
+
+                            <?php if (isset($_GET["error"]) && $_GET["error"] === "1"): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-x-circle-fill"></i> Passwords do not match.
+                                </div>
+                            <?php endif; ?>
+
+                            <form class="user needs-validation" novalidate action="process/register.php" method="post">
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control form-control-user" id="exampleFirstName"
+                                        <input type="text" name="first_name" required class="form-control form-control-user" id="exampleFirstName"
                                             placeholder="First Name">
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control form-control-user" id="exampleLastName"
+                                        <input type="text" name="last_name" required class="form-control form-control-user" id="exampleLastName"
                                             placeholder="Last Name">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail"
+                                    <input type="text" name="username" required class="form-control form-control-user" id="exampleInputUsername"
+                                        placeholder="Username">
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" name="email" required class="form-control form-control-user" id="exampleInputEmail"
                                         placeholder="Email Address">
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="password" class="form-control form-control-user"
+                                        <input type="password" name="password" required class="form-control form-control-user"
                                             id="exampleInputPassword" placeholder="Password">
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="password" class="form-control form-control-user"
+                                        <input type="password" name="repeat_password" required class="form-control form-control-user"
                                             id="exampleRepeatPassword" placeholder="Repeat Password">
                                     </div>
                                 </div>
-                                <a href="index.php" class="btn btn-primary btn-user btn-block">
+                                <button type="submit" class="btn btn-primary btn-user btn-block">Register Account</button>
+                                <!-- <a href="index.php" class="btn btn-primary btn-user btn-block">
                                     Register Account
-                                </a>
-                                <hr>
+                                </a> -->
+                                <!-- <hr> -->
                                 <!-- <a href="index.html" class="btn btn-google btn-user btn-block">
                                     <i class="fab fa-google fa-fw"></i> Register with Google
                                 </a>
@@ -73,7 +85,7 @@
                                     <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
                                 </a> -->
                             </form>
-                            
+
                             <div class="text-center">
                                 <a class="small" href="forgot-password.php">Forgot Password?</a>
                             </div>
@@ -97,6 +109,7 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <script src="js/form_validation.js"></script>
 
 </body>
 
