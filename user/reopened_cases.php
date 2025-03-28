@@ -29,7 +29,7 @@ require_once "../fetch/reopened_cases_table_user.php";
             <!-- Main Content -->
             <div id="content">
                 <!-- Topbar -->
-                <?php include_once "../components/topbar.php" ?>
+                <?php include_once "../components/user_topbar.php" ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->

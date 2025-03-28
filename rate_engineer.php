@@ -1,165 +1,121 @@
-<?php 
+<?php
 session_start();
-require_once "config/database.php";
+require_once "./config/database.php"; // Adjust path if needed
 
-if (!isset($_SESSION["user_id"])) {
-    header("Location: ../index.php?rate=1");
-    exit;
+// Check if required parameters are present in the URL
+if (!isset($_GET['id']) || !isset($_GET['case'])) { // Still expect both for context
+    die("Invalid rating link. Required parameters are missing.");
 }
 
-if (isset($_GET["id"])) {
-    $engineerId = base64_decode($_GET["id"]);
+// Decode parameters
+$engineerIdEncoded = $_GET['id'];
+$caseNumberEncoded = $_GET['case']; // Still decode for display
+$engineerId = base64_decode($engineerIdEncoded);
+$caseNumber = base64_decode($caseNumberEncoded);
 
-    $getEngineer = mysqli_prepare($connection, "SELECT * FROM users WHERE id = ?");
-    mysqli_stmt_bind_param($getEngineer, "i", $engineerId);
-    mysqli_stmt_execute($getEngineer);
-    $getEngineerResult = mysqli_stmt_get_result($getEngineer);
-    if (mysqli_num_rows($getEngineerResult) > 0) {
-        $row = mysqli_fetch_assoc($getEngineerResult);
-        $engineerName = $row["full_name"];
-    }
+// Validate decoded values (basic check)
+if (!$engineerId || !$caseNumber) {
+    die("Invalid rating link. Parameters could not be decoded.");
 }
+
+// --- REMOVED: Check if already rated (No longer possible with this table structure) ---
+
+// --- Fetch Engineer Name (for display) ---
+$engineerName = 'the Engineer'; // Default
+$getEngNameStmt = mysqli_prepare($connection, "SELECT full_name FROM users WHERE id = ? LIMIT 1");
+mysqli_stmt_bind_param($getEngNameStmt, "i", $engineerId); // Assuming engineer_id is integer
+mysqli_stmt_execute($getEngNameStmt);
+$result = mysqli_stmt_get_result($getEngNameStmt);
+if ($row = mysqli_fetch_assoc($result)) {
+    $engineerName = htmlspecialchars($row['full_name']);
+}
+mysqli_stmt_close($getEngNameStmt);
+mysqli_close($connection); // Close connection
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>i-Secure Networks and Business Solutions, Inc.</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-
-    <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Your Engineer</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
     <style>
-        .star-rating {
-            display: flex;
-            justify-content: center;
-            font-size: 2em;
-        }
-
-        .star-rating input[type="radio"] {
-            display: none;
-        }
-
-        .star-rating label {
-            color: lightgray;
-            cursor: pointer;
-        }
-
-        .star-rating input[type="radio"]:checked ~ label {
-            color: gold;
-        }
-
-        .star-rating label:hover,
-        .star-rating label:hover ~ label {
-            color: gold;
-        }
+        /* Basic styling - same as before */
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        p { color: #555; }
+        .rating-question { font-weight: bold; margin-bottom: 20px; font-size: 1.1em; }
+        .rating-options { display: flex; justify-content: space-around; margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+        .rating-options label { display: flex; flex-direction: column; align-items: center; cursor: pointer; text-align: center; padding: 5px; }
+        .rating-options input[type="radio"] { margin-bottom: 8px; transform: scale(1.2); }
+        .rating-options span { font-size: 0.9em; color: #666; }
+        .submit-btn { display: block; width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 1.1em; cursor: pointer; transition: background-color 0.3s ease; }
+        .submit-btn:hover { background-color: #0056b3; }
+        .case-info { font-size: 0.9em; text-align: center; color: #777; margin-bottom: 25px;}
+        .error-message { color: red; text-align: center; margin-bottom: 15px;}
     </style>
-
 </head>
-
-<body class="bg-gradient-primary">
-
+<body>
     <div class="container">
+        <h2>Rate Your Support Experience</h2>
+        <p class="case-info">Regarding Case #: <strong><?php echo htmlspecialchars($caseNumber); ?></strong></p>
 
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
+        <?php
+            if (isset($_GET['error'])) {
+                echo '<p class="error-message">'.htmlspecialchars($_GET['error']).'</p>';
+            }
+        ?>
 
-            <div class="col-xl-10 col-lg-12 col-md-9">
+        <form action="submit_rating.php" method="POST" onsubmit="return validateRating();">
+            <input type="hidden" name="engineer_id_encoded" value="<?php echo $engineerIdEncoded; ?>">
+            <input type="hidden" name="case_number_encoded" value="<?php echo $caseNumberEncoded; ?>">
 
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6 border bg-login-image d-flex justify-content-center align-items-center">
-                                <img src="brand.jpg" class="img-fluid p-3" alt="">
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Engineer Performance Rating</h1>
-                                    </div>
-                                    <form class="user needs-validation" novalidate action="process/rate_engineer.php" method="post">
-                                        <input type="hidden" name="engineer_id" id="engineerId" value="<?= $engineerId ?>">
-                                        <div class="form-group">
-                                            <input type="text" value="<?= $engineerName ?>" class="form-control form-control-user" id="username" readonly>
-                                        </div>
-                                        <div class="form-group">
-                                            <!-- Star Rating -->
-                                            <label for="rating">Rate the Engineer:</label>
-                                            <div class="star-rating">
-                                                <input type="radio" id="star5" name="rating" value="5">
-                                                <label for="star5">&#9733;</label>
-                                                <input type="radio" id="star4" name="rating" value="4">
-                                                <label for="star4">&#9733;</label>
-                                                <input type="radio" id="star3" name="rating" value="3">
-                                                <label for="star3">&#9733;</label>
-                                                <input type="radio" id="star2" name="rating" value="2">
-                                                <label for="star2">&#9733;</label>
-                                                <input type="radio" id="star1" name="rating" value="1">
-                                                <label for="star1">&#9733;</label>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">Submit</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
+            <p class="rating-question">How satisfied were you with the support provided by <strong><?php echo $engineerName; ?></strong>?</p>
+
+            <div class="rating-options" id="ratingGroup">
+                <label>
+                    <input type="radio" name="rating" value="1" required>
+                    <span>Very Dissatisfied</span>
+                </label>
+                <label>
+                    <input type="radio" name="rating" value="2">
+                    <span>Dissatisfied</span>
+                </label>
+                <label>
+                    <input type="radio" name="rating" value="3">
+                    <span>Neutral</span>
+                </label>
+                <label>
+                    <input type="radio" name="rating" value="4">
+                    <span>Satisfied</span>
+                </label>
+                <label>
+                    <input type="radio" name="rating" value="5">
+                    <span>Very Satisfied</span>
+                </label>
             </div>
+            <p id="ratingError" class="error-message" style="display: none;">Please select a rating.</p>
 
-        </div>
-
+            <button type="submit" class="submit-btn">Submit Rating</button>
+        </form>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
     <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (() => {
-            'use strict'
-
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                }, false)
-            })
-        })()
+        // Basic client-side validation - same as before
+        function validateRating() {
+            const ratingGroup = document.getElementById('ratingGroup');
+            const selectedRating = ratingGroup.querySelector('input[name="rating"]:checked');
+            const errorP = document.getElementById('ratingError');
+            if (!selectedRating) {
+                errorP.style.display = 'block';
+                return false; // Prevent form submission
+            }
+             errorP.style.display = 'none';
+            return true; // Allow form submission
+        }
     </script>
-
 </body>
-
 </html>

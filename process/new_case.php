@@ -4,10 +4,11 @@ session_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../vendor/autoload.php'; // Adjust path as needed
-require_once "../config/database.php"; // Database connection
+require '../vendor/autoload.php';
+require_once "../config/database.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // --- Generate Case Number ---
     $query = "SELECT case_number FROM cases ORDER BY id DESC LIMIT 1";
     $result = $connection->query($query);
 
@@ -19,19 +20,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $case_number = "00000001";
     }
 
-    $type = trim($_POST["type"]);
-    $subject = trim($_POST["subject"]);
-    $severity = trim($_POST["severity"]);
-    $product_group = trim($_POST["product_group"]);
-    $product = trim($_POST["product_name"]);
+    // --- Sanitize and Retrieve Data ---
+    $type = mysqli_real_escape_string($connection, trim($_POST["type"]));
+    $subject = mysqli_real_escape_string($connection, trim($_POST["subject"]));
+    $severity = mysqli_real_escape_string($connection, trim($_POST["severity"]));
+    $product_group = mysqli_real_escape_string($connection, trim($_POST["product_group"]));
+    $product = mysqli_real_escape_string($connection, trim($_POST["product_name"]));
     $case_owner = $_SESSION["user_id"];
-    $company = trim($_POST["company"]);
-    $product_version = trim($_POST["product_version"]);
+    $company = mysqli_real_escape_string($connection, trim($_POST["company"]));
+    $product_version = mysqli_real_escape_string($connection, trim($_POST["product_version"]));
 
-    // File upload settings
-    $upload_dir = "../uploads/"; // Ensure this directory exists and is writable
+    // --- File Upload Handling ---
+    $upload_dir = "../uploads/";
     $allowed_types = ["jpg", "jpeg", "png", "gif", "pdf", "doc", "docx", "mp4", "avi", "mov"];
-    $max_file_size = 10 * 1024 * 1024; // 10MB in bytes
+    $max_file_size = 10 * 1024 * 1024;
     $attachment_name = "";
 
     if (!empty($_FILES["attachment"]["name"])) {
@@ -40,27 +42,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $file_size = $_FILES["attachment"]["size"];
         $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-        // Validate file type
         if (!in_array($file_ext, $allowed_types)) {
             die("Error: Invalid file type. Allowed types: " . implode(", ", $allowed_types));
         }
 
-        // Validate file size (10MB limit)
         if ($file_size > $max_file_size) {
             die("Error: File size exceeds 10MB limit.");
         }
 
-        // Set unique file name
         $attachment_name = time() . "_" . basename($file_name);
         $upload_path = $upload_dir . $attachment_name;
 
-        // Move file to uploads directory
         if (!move_uploaded_file($file_tmp, $upload_path)) {
             die("Error: Failed to upload file.");
         }
     }
 
-    // Insert case into database
+    // --- Insert Case into Database ---
     $query = "INSERT INTO cases (case_number, type, subject, severity, product_group, product, company, product_version, case_owner, attachment) 
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -68,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->bind_param("ssssssssss", $case_number, $type, $subject, $severity, $product_group, $product, $company, $product_version, $case_owner, $attachment_name);
 
         if ($stmt->execute()) {
-            // Fetch case owner details
+            // --- Fetch Case Owner Details ---
             $query_user = "SELECT full_name, email FROM users WHERE id = ?";
             if ($stmt_user = $connection->prepare($query_user)) {
                 $stmt_user->bind_param("s", $case_owner);
@@ -79,17 +77,80 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $case_owner_name = $row_user["full_name"];
                     $case_owner_email = $row_user["email"];
 
-                    $emailBody = "Dear $case_owner_name,<br><br> The issue reported has been successfully logged as case #$case_number.<br><br><b> Please Note:</b> Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone.<br><br> Thank you.<br><br><i> Please do not reply to this email. To update your case, click on the direct link to the case.</i>";
+                    // --- Prepare Plain Text Message for Database ---
+                    $plainMessage = "Dear " . htmlspecialchars($case_owner_name) . ",\n\n"
+                        . "Your issue has been successfully logged as case #" . htmlspecialchars($case_number) . ".\n\n"
+                        . "Please Note: Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone.\n\n"
+                        . "Thank you,\nTechnical Support Team\n\n";
 
-                    // Send email notification
+                    // --- Enhanced Email Body (HTML) ---
+                    $emailBody = "
+                        <!DOCTYPE html>
+                        <html lang='en'>
+                        <head>
+                            <meta charset='UTF-8'>
+                            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                            <title>Case #$case_number Created</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    line-height: 1.6;
+                                    color: #333;
+                                    background-color: #f4f4f4;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                                .container {
+                                    max-width: 600px;
+                                    margin: 20px auto;
+                                    background-color: #fff;
+                                    padding: 20px;
+                                    border-radius: 5px;
+                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                }
+                                h1 {
+                                    color: #0056b3;
+                                    border-bottom: 2px solid #0056b3;
+                                    padding-bottom: 10px;
+                                }
+                                p {
+                                    margin-bottom: 10px;
+                                }
+                                .highlight {
+                                    font-weight: bold;
+                                    color: #0056b3;
+                                }
+                                .note {
+                                    font-size: 0.9em;
+                                    color: #777;
+                                    font-style: italic;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <h1>Case #$case_number Created</h1>
+                                <p>Dear <span class='highlight'>" . htmlspecialchars($case_owner_name) . "</span>,</p>
+                                <p>Your issue has been successfully logged as case #<span class='highlight'>" . htmlspecialchars($case_number) . "</span>.</p>
+                                <p class='note'>
+                                    <b>Please Note:</b> Customers needing immediate assistance on a Severity issue opened outside of normal business hours must contact us by phone.
+                                </p>
+                                <p>Thank you.</p>
+                                <p><i>Please do not reply to this email. To update your case, please use the support portal.</i></p>
+                            </div>
+                        </body>
+                        </html>
+                        ";
+
+                    // --- Send Email Notification ---
                     $mail = new PHPMailer(true);
 
                     try {
                         $mail->isSMTP();
-                        $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
+                        $mail->Host = 'smtp.gmail.com';
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'joicebarandon31@gmail.com'; // Your SMTP username
-                        $mail->Password = 'gmbviduachzzyazu'; // Your SMTP password
+                        $mail->Username = 'joicebarandon31@gmail.com';
+                        $mail->Password = 'gmbviduachzzyazu';
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port = 587;
 
@@ -101,11 +162,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $mail->Body = $emailBody;
                         $mail->send();
 
+                        // --- Store Chat Message ---
                         $system_name = "System";
-                        $message = strip_tags($emailBody); 
+                        $message = $plainMessage; // Use the plain text message
                         $sendMessage = mysqli_prepare($connection, "INSERT INTO chats (case_number, sender, receiver, message) VALUES (?, ?, ?, ?)");
                         mysqli_stmt_bind_param($sendMessage, "ssss", $case_number, $system_name, $case_owner_name, $message);
                         mysqli_stmt_execute($sendMessage);
+
+                        // --- Store Notification ---
+                        $notificationSubject = "New Case #$case_number Created";
+                        $notificationMessage = $plainMessage; // Use the plain text message
+                        $insertNotification = mysqli_prepare($connection, "INSERT INTO notifications (case_id, recipient_username, recipient_email, message_subject, message_body) VALUES (?, ?, ?, ?, ?)");
+                        mysqli_stmt_bind_param($insertNotification, "issss", $case_number, $case_owner_name, $case_owner_email, $notificationSubject, $notificationMessage);
+                        mysqli_stmt_execute($insertNotification);
+
                     } catch (Exception $e) {
                         echo "Error: Could not send email. Mailer Error: {$mail->ErrorInfo}";
                     }
@@ -123,3 +193,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $connection->close();
 }
+?>
