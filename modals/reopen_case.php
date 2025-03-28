@@ -15,7 +15,7 @@
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">
                     No
                 </button>
-                <form action="../process/reopen_case.php" method="post">
+                <form action="../process/re_open_case.php" method="post">
                     <input type="hidden" name="case_number" id="caseNumber">
                     <button type="submit" class="btn btn-primary">Yes</button>
                 </form>
