@@ -1,7 +1,7 @@
 <?php 
     session_start();
     // require_once "../fetch/solved_cases.php";
-    $pageTitle = "All Purchased Products";
+    $pageTitle = "Purchased Products";
 ?>
 
 <!DOCTYPE html>

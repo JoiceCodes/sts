@@ -61,9 +61,9 @@
                             <h3 class="h4 text-gray-800 mb-4">Contact Us</h3>
                             <p>If you have any questions or would like to learn more about our services, feel free to reach out to us!</p>
                             <ul>
-                                <li><strong>Email:</strong> contact@isecure.com</li>
+                                <li><strong>Email:</strong> support@isecure.com</li>
                                 <li><strong>Phone:</strong> +1 (123) 456-7890</li>
-                                <li><strong>Address:</strong> 123 Secure Street, Cyber City, 98765</li>
+                                <li><strong>Address:</strong> 1018 Cityland Shaw Tower, Shaw Blvd. corner St. Francis St., Mandaluyong, Philippines</li>
                             </ul>
                         </div>
                     </div>

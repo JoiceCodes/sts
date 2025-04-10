@@ -39,28 +39,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // --- Prepare Plain Text Email Body ---
             $emailSubject = 'Ticket Reopened: ' . $caseNumber;
             $emailBodyPlain = "Dear " . htmlspecialchars($ownerFullName) . ",\n\n" .
-                              "We would like to inform you that your support ticket (" . htmlspecialchars($caseNumber) . ") regarding " . htmlspecialchars($issueDescription) . " has been reopened.\n\n" .
-                              "Our team is actively reviewing the case to ensure a thorough resolution. You will be notified of any updates or progress.\n\n" .
-                              "If you have any additional details or questions, please feel free to share them with us.\n\n" .
-                              "Thank you for your continued patience and cooperation.\n\n" .
-                              "Best regards,\n" .
-                              "i-Secure Networks and Business Solutions Inc.";
+                "We would like to inform you that your support ticket (" . htmlspecialchars($caseNumber) . ") regarding " . htmlspecialchars($issueDescription) . " has been reopened.\n\n" .
+                "Our team is actively reviewing the case to ensure a thorough resolution. You will be notified of any updates or progress.\n\n" .
+                "If you have any additional details or questions, please feel free to share them with us.\n\n" .
+                "Thank you for your continued patience and cooperation.\n\n" .
+                "Best regards,\n" .
+                "i-Secure Networks and Business Solutions Inc.";
 
             // --- Prepare HTML Email Body for Sending ---
             $emailBodyHTML = '<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; margin: 0; padding: 0;">' .
-                             '<div style="max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">' .
-                             '<h1 style="color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px;">Ticket Reopened: ' . htmlspecialchars($caseNumber) . '</h1>' .
-                             '<p>Dear <span style="font-weight: bold;">' . htmlspecialchars($ownerFullName) . '</span>,</p>' .
-                             '<p>We would like to inform you that your support ticket (<span style="font-weight: bold; color: #0056b3;">' . htmlspecialchars($caseNumber) . '</span>) regarding <span style="font-style: italic;">' . htmlspecialchars($issueDescription) . '</span> has been reopened.</p>' .
-                             '<p>Our team is actively reviewing the case to ensure a thorough resolution. You will be notified of any updates or progress.</p>' .
-                             '<p>If you have any additional details or questions, please feel free to share them with us.</p>' .
-                             '<p>Thank you for your continued patience and cooperation.</p>' .
-                             '<div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 0.8em; color: #777;">' .
-                             'Best regards,<br>' .
-                             'i-Secure Networks and Business Solutions Inc.' .
-                             '</div>' .
-                             '</div>' .
-                             '</div>';
+                '<div style="max-width: 600px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">' .
+                '<h1 style="color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px;">Ticket Reopened: ' . htmlspecialchars($caseNumber) . '</h1>' .
+                '<p>Dear <span style="font-weight: bold;">' . htmlspecialchars($ownerFullName) . '</span>,</p>' .
+                '<p>We would like to inform you that your support ticket (<span style="font-weight: bold; color: #0056b3;">' . htmlspecialchars($caseNumber) . '</span>) regarding <span style="font-style: italic;">' . htmlspecialchars($issueDescription) . '</span> has been reopened.</p>' .
+                '<p>Our team is actively reviewing the case to ensure a thorough resolution. You will be notified of any updates or progress.</p>' .
+                '<p>If you have any additional details or questions, please feel free to share them with us.</p>' .
+                '<p>Thank you for your continued patience and cooperation.</p>' .
+                '<div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 0.8em; color: #777;">' .
+                'Best regards,<br>' .
+                'i-Secure Networks and Business Solutions Inc.' .
+                '</div>' .
+                '</div>' .
+                '</div>';
 
             // --- Save Notification to Database (Plain Text) ---
             $insertNotificationStmt = mysqli_prepare($connection, "INSERT INTO notifications (case_id, recipient_username, recipient_email, message_subject, message_body) VALUES (?, ?, ?, ?, ?)");
@@ -121,11 +121,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         case "Engineer":
             $folder = "engineer";
             break;
-        case "Technical Engineer":
-            $folder = "technical_engineer";
-            break;
         case "Technical Head":
             $folder = "technical_head";
+            break;
+        case "Administrator":
+            $folder = "administrator";
+            break;
+        case "User":
+            $folder = "user";
             break;
         default:
             $folder = "unknown"; // Handle unknown roles appropriately
@@ -143,4 +146,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     header("Location: " . $redirectURL);
     exit;
 }
-?>

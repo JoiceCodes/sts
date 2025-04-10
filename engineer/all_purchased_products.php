@@ -7,7 +7,7 @@ if (!isset($_SESSION["user_id"])) {
 }
 
 // require_once "../fetch/solved_cases.php";
-$pageTitle = "All Purchased Products";
+$pageTitle = "Purchased Products";
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +30,7 @@ $pageTitle = "All Purchased Products";
             <!-- Main Content -->
             <div id="content">
                 <!-- Topbar -->
-                <?php include_once "../components/topbar.php" ?>
+                <?php include_once "../components/engineer_topbar.php" ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->

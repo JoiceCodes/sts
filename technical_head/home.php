@@ -25,7 +25,7 @@ require_once "../fetch/reopened_cases_technical.php";
             <!-- Main Content -->
             <div id="content">
                 <!-- Topbar -->
-                <?php include_once "../components/topbar.php" ?>
+                <?php include_once "../components/administrator_topbar.php" ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -222,8 +222,8 @@ require_once "../fetch/reopened_cases_technical.php";
     <script src="../vendor/chart.js/Chart.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <!-- <script src="../js/demo/chart-area-demo.js"></script>
-    <script src="../js/demo/chart-pie-demo.js"></script> -->
+    <!-- <script src="../js/demo/chart-area-demo.js"></script> -->
+    <!-- <script src="../js/demo/chart-pie-demo.js"></script> -->
 
     <?php
     // Example of how to fetch the case counts from the database

@@ -30,7 +30,7 @@ require_once "../fetch/reopened_cases_engineer.php";
             <!-- Main Content -->
             <div id="content">
                 <!-- Topbar -->
-                <?php include_once "../components/topbar.php" ?>
+                <?php include_once "../components/engineer_topbar.php" ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->

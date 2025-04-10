@@ -19,6 +19,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $currentId = mysqli_stmt_insert_id($setProduct);
 
-    header("Location: ../technical_head/products.php");
+    header("Location: ../administrator/products.php");
     exit();
 }

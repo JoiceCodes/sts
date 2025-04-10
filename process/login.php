@@ -21,11 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["user_role"] = $userRow["role"];
 
             switch ($_SESSION["user_role"]) {
+                case "Administrator":
+                    $folder = "administrator";
+                    break;
                 case "Technical Head":
                     $folder = "technical_head";
-                    break;
-                case "Technical Engineer":
-                    $folder = "technical_engineer";
                     break;
                 case "Engineer":
                     $folder = "engineer";

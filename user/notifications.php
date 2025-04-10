@@ -13,6 +13,37 @@ if (!isset($_SESSION["user_full_name"])) {
 $username = $_SESSION["user_full_name"];
 $pageTitle = "Notifications";
 
+$notification_id_to_mark = null;
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $notification_id_to_mark = (int)$_GET['id'];
+}
+
+// Proceed only if we have a valid ID and database connection
+if ($notification_id_to_mark && isset($connection)) {
+    $current_user = $_SESSION["user_full_name"];
+
+    // Prepare the UPDATE statement to mark as read
+    // IMPORTANT: Also check recipient_username to prevent users marking others' notifications
+    $update_sql = "UPDATE notifications SET is_read = 1 WHERE id = ? AND recipient_username = ?";
+    $update_stmt = $connection->prepare($update_sql);
+
+    if ($update_stmt) {
+        $update_stmt->bind_param("is", $notification_id_to_mark, $current_user);
+        $update_stmt->execute();
+
+        // Optional: Check for errors during execution
+        if ($update_stmt->error) {
+            error_log("Error updating notification read status (ID: $notification_id_to_mark): " . $update_stmt->error);
+        }
+        // You could also check $update_stmt->affected_rows if needed
+
+        $update_stmt->close();
+    } else {
+        // Log error if preparing the statement failed
+        error_log("Error preparing notification update query: " . $connection->error);
+    }
+}
+
 // Check if a specific notification ID is requested
 $notification_id = null;
 $notification_data = null;
@@ -38,7 +69,7 @@ if (isset($_GET['id'])) {
                 // --- Marking as Read section REMOVED ---
             } else {
                 // Check if the query failed or simply returned no rows
-                 if (!$result) {
+                if (!$result) {
                     $error_message = "Error fetching notification details.";
                     error_log("Error executing specific notification query: " . $stmt->error);
                 } else {
@@ -53,24 +84,23 @@ if (isset($_GET['id'])) {
     }
 }
 
-// If no specific ID or an error occurred fetching it, prepare to list all notifications
 $all_notifications = [];
 // Only fetch all if not viewing one and no error message has been set yet
 if ($notification_data === null && $error_message === null) {
     // Removed 'is_read' from SELECT
     $query_all = "SELECT id, message_subject, message_body, sent_at FROM notifications WHERE recipient_username = ? ORDER BY sent_at DESC";
     $stmt_all = $connection->prepare($query_all);
-    if($stmt_all) {
+    if ($stmt_all) {
         $stmt_all->bind_param("s", $username);
         $stmt_all->execute();
         $result_all = $stmt_all->get_result();
-        if($result_all) {
+        if ($result_all) {
             while ($row = $result_all->fetch_assoc()) {
                 $all_notifications[] = $row;
             }
         } else {
-             $error_message = "Could not fetch notification list.";
-             error_log("Error getting result for all notifications: " . $connection->error);
+            $error_message = "Could not fetch notification list.";
+            error_log("Error getting result for all notifications: " . $connection->error);
         }
         $stmt_all->close();
     } else {
@@ -98,7 +128,8 @@ if ($notification_data === null && $error_message === null) {
                 <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800"><?= htmlspecialchars($pageTitle) ?></h1>
-                        <?php if ($notification_data !== null): // Show back button only when viewing single notification ?>
+                        <?php if ($notification_data !== null): // Show back button only when viewing single notification 
+                        ?>
                             <a href="all_notifications.php" class="btn btn-sm btn-secondary shadow-sm"><i class="fas fa-arrow-left fa-sm text-white-50"></i> Go to All Notifications</a>
                         <?php endif; ?>
                     </div>
@@ -108,28 +139,30 @@ if ($notification_data === null && $error_message === null) {
                     <?php endif; ?>
 
                     <?php if ($notification_data !== null): ?>
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary"><?php echo htmlspecialchars($notification_data['message_subject']); ?></h6>
-                             <span class="small text-gray-600">
-                                Case ID: <?php echo htmlspecialchars($notification_data['case_id'] ?? 'N/A'); ?>
-                            </span>
-                        </div>
-                        <div class="card-body">
-                            <p class="small text-gray-600 mb-2">
-                                Received: <?php echo date("F j, Y, g:i a", strtotime($notification_data['sent_at'])); ?>
-                            </p>
-                            <hr>
-                            <div class="message-body">
-                                <?php echo nl2br(htmlspecialchars($notification_data['message_body'])); // Use nl2br to respect newlines ?>
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary"><?php echo htmlspecialchars($notification_data['message_subject']); ?></h6>
+                                <span class="small text-gray-600">
+                                    Case ID: <?php echo htmlspecialchars($notification_data['case_id'] ?? 'N/A'); ?>
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-gray-600 mb-2">
+                                    Received: <?php echo date("F j, Y, g:i a", strtotime($notification_data['sent_at'])); ?>
+                                </p>
+                                <hr>
+                                <div class="message-body">
+                                    <?php echo nl2br(htmlspecialchars($notification_data['message_body'])); // Use nl2br to respect newlines 
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted small">
+                                Sent to: <?php echo htmlspecialchars($notification_data['recipient_username'] . ' (' . $notification_data['recipient_email'] . ')'); ?>
                             </div>
                         </div>
-                         <div class="card-footer text-muted small">
-                            Sent to: <?php echo htmlspecialchars($notification_data['recipient_username'] . ' (' . $notification_data['recipient_email'] . ')'); ?>
-                         </div>
-                    </div>
 
-                    <?php elseif (empty($error_message)): // Only show list if no error and not viewing single ?>
+                    <?php elseif (empty($error_message)): // Only show list if no error and not viewing single 
+                    ?>
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h6 class="m-0 font-weight-bold text-primary">All Notifications</h6>
@@ -142,15 +175,15 @@ if ($notification_data === null && $error_message === null) {
                                         <?php foreach ($all_notifications as $notif):
                                             // Removed styling based on read status
                                         ?>
-                                        <a href="notifications.php?id=<?php echo $notif['id']; ?>" class="list-group-item list-group-item-action flex-column align-items-start">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <h5 class="mb-1 font-weight-normal"><?php echo htmlspecialchars($notif['message_subject']); ?></h5>
-                                                <small class="text-muted"><?php echo date("M j, Y", strtotime($notif['sent_at'])); ?></small>
-                                            </div>
-                                            <p class="mb-1 small text-muted">
-                                                <?php echo htmlspecialchars(substr($notif['message_body'], 0, 100)); ?><?php echo strlen($notif['message_body']) > 100 ? '...' : ''; ?>
-                                            </p>
-                                        </a>
+                                            <a href="notifications.php?id=<?php echo $notif['id']; ?>" class="list-group-item list-group-item-action flex-column align-items-start">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h5 class="mb-1 font-weight-normal"><?php echo htmlspecialchars($notif['message_subject']); ?></h5>
+                                                    <small class="text-muted"><?php echo date("M j, Y", strtotime($notif['sent_at'])); ?></small>
+                                                </div>
+                                                <p class="mb-1 small text-muted">
+                                                    <?php echo htmlspecialchars(substr($notif['message_body'], 0, 100)); ?><?php echo strlen($notif['message_body']) > 100 ? '...' : ''; ?>
+                                                </p>
+                                            </a>
                                         <?php endforeach; ?>
                                     </div>
                                 <?php endif; ?>
@@ -159,10 +192,10 @@ if ($notification_data === null && $error_message === null) {
                     <?php endif; ?>
 
                 </div>
-                </div>
-            <?php include_once __DIR__ . "/../components/footer.php"; ?>
             </div>
+            <?php include_once __DIR__ . "/../components/footer.php"; ?>
         </div>
+    </div>
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
@@ -177,4 +210,5 @@ if ($notification_data === null && $error_message === null) {
     <script src="../js/sb-admin-2.min.js"></script>
 
 </body>
+
 </html>

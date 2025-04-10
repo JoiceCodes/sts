@@ -3,11 +3,11 @@ session_start();
 require_once "../config/database.php";  // Database connection
 
 switch ($_SESSION["user_role"]) {
-    case "Technical Engineer":
-        $folder = "technical_engineer";
-        break;
     case "Technical Head":
         $folder = "technical_head";
+        break;
+    case "Administrator":
+        $folder = "administrator";
         break;
 }
 

@@ -11,11 +11,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     mysqli_stmt_execute($setEngineer);
 
     switch ($_SESSION["user_role"]) {
-        case "Technical Engineer":
-            $folder = "technical_engineer";
-            break;
         case "Technical Head":
             $folder = "technical_head";
+            break;
+        case "Administrator":
+            $folder = "administrator";
             break;
     }
 

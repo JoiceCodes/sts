@@ -89,7 +89,7 @@ require_once "../fetch/ongoing_cases.php"; // Assuming this fetches the $ongoing
         <?php include_once "../components/sidebar.php" ?>
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <?php include_once "../components/topbar.php" ?>
+                <?php include_once "../components/engineer_topbar.php" ?>
                 <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800"><?= htmlspecialchars($pageTitle) ?></h1>

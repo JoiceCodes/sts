@@ -1,0 +1,422 @@
+<?php
+session_start();
+
+if (!isset($_SESSION["user_id"])) {
+    header("Location: ../index.php");
+    exit;
+}
+$pageTitle = "On-going Cases";
+// Ensure this path is correct for fetching data
+require_once "../fetch/ongoing_cases_table_user.php";
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <?php include_once "../components/head.php" ?>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
+
+    <style>
+        /* Chat Messages Container */
+        #chatMessages {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Space between messages */
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 300px; /* Reduced height for chat area */
+        }
+
+        /* Common message styles */
+        .chat-message {
+            max-width: 80%;
+            word-wrap: break-word;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        /* Sender's message (align to the right) */
+        .message-sender {
+            align-self: flex-end;
+            background-color: #007bff;
+            color: white;
+            text-align: left;
+        }
+
+        /* Receiver's message (align to the left) */
+        .message-receiver {
+            align-self: flex-start;
+            background-color: #f1f1f1;
+            color: black;
+            text-align: left;
+        }
+
+        /* Timestamp styling */
+        .message-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: right;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .message-receiver .message-time {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Optional: Styling for details modal content */
+        #detailsModal .modal-body p {
+            margin-bottom: 0.5rem;
+        }
+        #detailsModal .modal-body strong {
+            min-width: 130px; /* Adjust as needed */
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <?php include_once "../components/sidebar.php" ?>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <?php include_once "../components/user_topbar.php" ?>
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800"><?= htmlspecialchars($pageTitle) ?></h1>
+                        </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary"><?= htmlspecialchars($pageTitle) ?> Table</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Case Number</th>
+                                            <th>Contact Name</th>
+                                            <th>Severity</th>
+                                            <th>Company</th>
+                                            <th>Last Modified</th>
+                                            <th>Actions</th> </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        // Assuming $ongoingCasesTable is fetched correctly
+                                         if (isset($ongoingCasesTable) && is_array($ongoingCasesTable)) {
+                                            foreach ($ongoingCasesTable as $row) {
+                                                // Prepare data, using htmlspecialchars for safety
+                                                // Case number link still triggers chat modal
+                                                $caseNumberLink = '<a href="#" class="case-number btn btn-link p-0" data-case-id="' . htmlspecialchars($row["id"]) . '" data-case-number="' . htmlspecialchars($row["case_number"]) . '" data-case-owner="' . htmlspecialchars($_SESSION["user_id"]) . '">' . htmlspecialchars($row["case_number"]) . '</a>';
+                                                $contactName = htmlspecialchars($row["contact_name"]);
+                                                $severity = htmlspecialchars($row["severity"]);
+                                                $company = htmlspecialchars($row["company"]);
+                                                $lastModified = htmlspecialchars($row["last_modified"]); // Assuming this column exists
+
+                                                // Data for the details modal
+                                                $type = htmlspecialchars($row["type"]);
+                                                $subject = htmlspecialchars($row["subject"]);
+                                                $productGroup = htmlspecialchars($row["product_group"]);
+                                                $product = htmlspecialchars($row["product"]);
+                                                $productVersion = htmlspecialchars($row["product_version"]);
+                                                $dateTimeOpened = htmlspecialchars($row["datetime_opened"]); // Assuming this column exists
+
+                                                echo "<tr>";
+                                                echo "<td>" . $caseNumberLink . "</td>";   // Display Case Number (link for chat)
+                                                echo "<td>" . $contactName . "</td>";      // Display Contact Name
+                                                echo "<td>" . $severity . "</td>";         // Display Severity
+                                                echo "<td>" . $company . "</td>";          // Display Company
+                                                echo "<td>" . $lastModified . "</td>";     // Display Last Modified
+
+                                                // Add the View Details button
+                                                echo '<td>';
+                                                echo '<button type="button" class="btn btn-info btn-sm view-details-btn"
+                                                        data-toggle="modal"
+                                                        data-target="#detailsModal"
+                                                        data-case-number="' . htmlspecialchars($row["case_number"]) . '"
+                                                        data-type="' . $type . '"
+                                                        data-subject="' . $subject . '"
+                                                        data-product-group="' . $productGroup . '"
+                                                        data-product="' . $product . '"
+                                                        data-product-version="' . $productVersion . '"
+                                                        data-datetime-opened="' . $dateTimeOpened . '">
+                                                        <i class="fas fa-eye"></i> View
+                                                      </button>';
+                                                echo '</td>';
+
+                                                echo "</tr>";
+                                            }
+                                        } else {
+                                             // Handle case where data isn't available or is not an array
+                                             echo '<tr><td colspan="6" class="text-center">No ongoing cases found.</td></tr>';
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            <?php include_once "../components/footer.php" ?>
+            </div>
+        </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <?php include_once "../modals/logout.php" ?>
+    <?php include_once "../modals/mark_as_solved.php" ?>
+
+    <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chatModalLabel">Chat for Case #<span id="chat-modal-case-number"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="chatMessages">
+                        <p class="text-center text-muted">Loading messages...</p>
+                    </div>
+                    <textarea id="chatInput" class="form-control mt-2" rows="3" placeholder="Type your message here..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="sendMessage">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document"> <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">Case Details (<span id="modal-case-number"></span>)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Type:</strong> <span id="modal-type"></span></p>
+                    <p><strong>Subject:</strong> <span id="modal-subject"></span></p>
+                    <p><strong>Product Group:</strong> <span id="modal-product-group"></span></p>
+                    <p><strong>Product:</strong> <span id="modal-product"></span></p>
+                    <p><strong>Product Version:</strong> <span id="modal-product-version"></span></p>
+                    <p><strong>Date & Time Opened:</strong> <span id="modal-datetime-opened"></span></p>
+                    <hr>
+                    <p><strong>Contact Name:</strong> <span id="modal-contact-name"></span></p>
+                    <p><strong>Severity:</strong> <span id="modal-severity"></span></p>
+                    <p><strong>Company:</strong> <span id="modal-company"></span></p>
+                    <p><strong>Last Modified:</strong> <span id="modal-last-modified"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <script src="../js/sb-admin-2.min.js"></script>
+
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            var dataTable = new DataTable('#table');
+
+            // --- Details Modal Logic ---
+            $('#table tbody').on('click', '.view-details-btn', function () {
+                var button = $(this);
+                var caseNumber = button.data('case-number');
+
+                // Populate the details modal fields
+                $('#modal-case-number').text(caseNumber);
+                $('#modal-type').text(button.data('type'));
+                $('#modal-subject').text(button.data('subject'));
+                $('#modal-product-group').text(button.data('product-group'));
+                $('#modal-product').text(button.data('product'));
+                $('#modal-product-version').text(button.data('product-version'));
+                $('#modal-datetime-opened').text(button.data('datetime-opened'));
+
+                // --- Optional: Get visible data directly from the table row ---
+                var row = button.closest('tr');
+                // Adjust column indices based on your final visible table structure
+                // Indices are 0-based: 0=Case#, 1=Contact, 2=Severity, 3=Company, 4=LastMod
+                $('#modal-contact-name').text(row.find('td:eq(1)').text());
+                $('#modal-severity').text(row.find('td:eq(2)').text());
+                $('#modal-company').text(row.find('td:eq(3)').text());
+                $('#modal-last-modified').text(row.find('td:eq(4)').text());
+                // --- End Optional ---
+
+                // Modal is shown automatically by Bootstrap attributes
+            });
+
+            // --- Mark as Solved Modal Logic (Existing) ---
+            const markAsSolvedModal = document.getElementById("markAsSolved");
+            const caseNumberHidden = document.getElementById("caseNumber"); // Ensure these IDs exist in mark_as_solved.php
+            const isReopenHidden = document.getElementById("isReopen");     // Ensure these IDs exist in mark_as_solved.php
+
+            if (markAsSolvedModal && caseNumberHidden && isReopenHidden) {
+                 // Use event delegation if .mark-as-solved-btn might be added dynamically
+                 $(document).on('click', '.mark-as-solved-btn', function(event) {
+                     caseNumberHidden.value = this.getAttribute("data-bs-case-number");
+                     isReopenHidden.value = this.getAttribute("data-bs-reopen");
+                     // No need to manually show the modal if using data-toggle/data-target
+                 });
+            } else {
+                console.warn("Mark as Solved modal elements not found. Ensure the modal and hidden inputs exist.");
+            }
+
+
+            // --- Chat Modal Logic (Existing - Adapted to jQuery and minor improvements) ---
+            const chatModal = new bootstrap.Modal(document.getElementById('chatModal'));
+            const chatMessagesContainer = $('#chatMessages'); // Use jQuery selector
+            const chatInput = $('#chatInput'); // Use jQuery selector
+            const sendMessageButton = $('#sendMessage'); // Use jQuery selector
+            const chatModalCaseNumSpan = $('#chat-modal-case-number'); // Span in modal title
+            let currentCaseNumberForChat = null;
+            let currentCaseOwnerForChat = null;
+            let fetchInterval = null;
+
+            // Event listener for case number clicks (using delegation)
+            $('#table tbody').on('click', 'a.case-number', function(event) {
+                event.preventDefault();
+                currentCaseNumberForChat = $(this).data('case-number');
+                currentCaseOwnerForChat = $(this).data('case-owner');
+
+                chatModalCaseNumSpan.text(currentCaseNumberForChat); // Update modal title
+                chatMessagesContainer.html('<p class="text-center text-muted">Loading messages...</p>'); // Clear/reset messages area
+                fetchChatMessages(currentCaseNumberForChat); // Initial fetch
+
+                chatModal.show();
+
+                // Start fetching messages periodically
+                if (fetchInterval) clearInterval(fetchInterval); // Clear previous interval if any
+                fetchInterval = setInterval(() => {
+                    // Only fetch if the modal is currently shown
+                    if ($('#chatModal').hasClass('show')) {
+                         fetchChatMessages(currentCaseNumberForChat);
+                    } else {
+                        // Stop interval if modal was closed unexpectedly
+                        clearInterval(fetchInterval);
+                        fetchInterval = null;
+                    }
+                }, 5000); // Fetch every 5 seconds
+            });
+
+            // Function to fetch chat messages
+            function fetchChatMessages(caseNumber) {
+                 if (!caseNumber) return; // Don't fetch if no case number
+
+                 $.ajax({
+                    url: `../fetch/chat_messages.php?case_number=${caseNumber}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        chatMessagesContainer.empty(); // Clear previous messages
+                        let userFullName = "<?= isset($_SESSION['user_full_name']) ? addslashes($_SESSION['user_full_name']) : 'User' ?>"; // Get current user name safely
+
+                        if (data && data.length > 0) {
+                            data.forEach(message => {
+                                const messageClass = (message.sender === userFullName) ? 'message-sender' : 'message-receiver';
+                                const messageHtml = `
+                                    <div class="chat-message ${messageClass}">
+                                        <strong>${$('<div>').text(message.sender).html()}</strong><br>
+                                        ${$('<div>').text(message.message).html()}
+                                        <span class="message-time">${$('<div>').text(message.created_at).html()}</span>
+                                    </div>`;
+                                chatMessagesContainer.append(messageHtml);
+                            });
+                        } else {
+                            chatMessagesContainer.html('<p class="text-center text-muted">No messages yet.</p>');
+                        }
+                        // Scroll to bottom only if user isn't scrolled up
+                        let scrollHeight = chatMessagesContainer.prop("scrollHeight");
+                        let currentScroll = chatMessagesContainer.scrollTop() + chatMessagesContainer.innerHeight();
+                        if (currentScroll >= scrollHeight - 50) { // Allow a small tolerance
+                             chatMessagesContainer.scrollTop(scrollHeight);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error fetching chat messages:', textStatus, errorThrown);
+                        // Optionally display an error in the chat window
+                        // chatMessagesContainer.html('<p class="text-center text-danger">Error loading messages.</p>');
+                    }
+                 });
+            }
+
+            // Event listener for sending messages
+            sendMessageButton.on('click', function() {
+                const message = chatInput.val().trim();
+                if (message && currentCaseNumberForChat) {
+                    sendMessageButton.prop('disabled', true); // Disable button while sending
+
+                    $.ajax({
+                        url: '../process/send_message.php',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            case_number: currentCaseNumberForChat,
+                            case_owner: currentCaseOwnerForChat, // Ensure this is needed by send_message.php
+                            message: message
+                        }),
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.success) {
+                                chatInput.val(''); // Clear input
+                                fetchChatMessages(currentCaseNumberForChat); // Refresh messages immediately
+                            } else {
+                                console.error("Error sending message:", data.error || "Unknown error");
+                                // Optionally show an error to the user
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                             console.error('Error sending message via AJAX:', textStatus, errorThrown);
+                        },
+                        complete: function() {
+                            sendMessageButton.prop('disabled', false); // Re-enable button
+                        }
+                    });
+                }
+            });
+
+             // Allow sending message with Enter key in textarea
+             chatInput.on('keypress', function(e) {
+                 if (e.key === 'Enter' && !e.shiftKey) { // Send on Enter, allow newline with Shift+Enter
+                     e.preventDefault(); // Prevent default Enter behavior (newline)
+                     sendMessageButton.click(); // Trigger send button click
+                 }
+             });
+
+            // Stop fetching messages when the chat modal is closed
+            $('#chatModal').on('hidden.bs.modal', function() {
+                if (fetchInterval) {
+                    clearInterval(fetchInterval);
+                    fetchInterval = null;
+                    console.log("Chat polling stopped.");
+                }
+                // Optional: Clear chat content when modal closes
+                // chatMessagesContainer.empty();
+                // chatInput.val('');
+                // currentCaseNumberForChat = null;
+            });
+
+        }); // End $(document).ready
+    </script>
+
+</body>
+</html>

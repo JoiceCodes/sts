@@ -6,7 +6,7 @@ if (!isset($_SESSION["user_id"])) {
     exit;
 }
 $pageTitle = "Reopened Cases";
-require_once "../fetch/reopened_cases.php"; // Assuming this fetches $reopenedCasesTable
+require_once "../fetch/reopened_cases.php"; 
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +16,6 @@ require_once "../fetch/reopened_cases.php"; // Assuming this fetches $reopenedCa
     <?php include_once "../components/head.php" ?>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
     <style>
-         /* Style for details modal labels */
         #reopenedCaseDetailsModal .modal-body dt {
             font-weight: bold;
             color: #5a5c69;
@@ -25,7 +24,6 @@ require_once "../fetch/reopened_cases.php"; // Assuming this fetches $reopenedCa
             margin-bottom: 0.75rem;
          }
 
-        /* --- Chat CSS (Copied from ongoing_cases) --- */
          #chatMessages {
             display: flex;
             flex-direction: column;
@@ -77,7 +75,7 @@ require_once "../fetch/reopened_cases.php"; // Assuming this fetches $reopenedCa
         <?php include_once "../components/sidebar.php" ?>
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <?php include_once "../components/topbar.php" ?>
+                <?php include_once "../components/engineer_topbar.php" ?>
                 <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800"><?= htmlspecialchars($pageTitle) ?></h1>

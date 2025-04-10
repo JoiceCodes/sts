@@ -24,7 +24,7 @@ require_once "../fetch/users.php";
             <!-- Main Content -->
             <div id="content">
                 <!-- Topbar -->
-                <?php include_once "../components/topbar.php" ?>
+                <?php include_once "../components/administrator_topbar.php" ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -60,9 +60,6 @@ require_once "../fetch/users.php";
                     <?php endif; ?>
 
                     <div class="card shadow mb-4">
-                        <div class="card-header">
-                            <h6 class="m-0 font-weight-bold text-primary"><?= $pageTitle ?> Table</h6>
-                        </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table" id="table">
@@ -141,10 +138,8 @@ require_once "../fetch/users.php";
 
     <!-- Logout Modal-->
     <?php include_once "../modals/logout.php" ?>
-
     <?php include_once "../modals/user_action.php" ?>
     <?php include_once "../modals/add_user.php" ?>
-
 
 
     <!-- Bootstrap core JavaScript-->

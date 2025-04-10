@@ -1,7 +1,7 @@
-<?php
-session_start();
-// require_once "../fetch/solved_cases.php";
-$pageTitle = "All Purchased Products";
+<?php 
+    session_start();
+    $pageTitle = "Purchased Products"
+    // require_once "../fetch/solved_cases.php";
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +24,7 @@ $pageTitle = "All Purchased Products";
             <!-- Main Content -->
             <div id="content">
                 <!-- Topbar -->
-                <?php include_once "../components/topbar.php" ?>
+                <?php include_once "../components/administrator_topbar.php" ?>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -56,25 +56,25 @@ $pageTitle = "All Purchased Products";
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                // foreach ($solvedCasesTable as $row) {
-                                //     $action = '<button type="button" class="badge btn btn-warning"><i class="bi bi-exclamation"></i> Reopen Case</button>';
-
-                                //     echo "<tr>";
-                                //     echo "<td>" . $row["case_number"] . "</td>";
-                                //     echo "<td>" . $row["type"] . "</td>";
-                                //     echo "<td>" . $row["subject"] . "</td>";
-                                //     echo "<td>" . $row["product_group"] . "</td>";
-                                //     echo "<td>" . $row["product"] . "</td>";
-                                //     echo "<td>" . $row["product_version"] . "</td>";
-                                //     echo "<td>" . $row["severity"] . "</td>";
-                                //     echo "<td>" . $row["case_owner"] . "</td>";
-                                //     echo "<td>" . $row["company"] . "</td>";
-                                //     echo "<td>" . $row["last_modified"] . "</td>";
-                                //     echo "<td>" . $row["datetime_opened"] . "</td>";
-                                //     echo "<td>$action</td>";
-                                //     echo "</tr>";
-                                // }
+                                <?php 
+                                    // foreach ($solvedCasesTable as $row) {
+                                    //     $action = '<button type="button" class="badge btn btn-warning"><i class="bi bi-exclamation"></i> Reopen Case</button>';
+                                        
+                                    //     echo "<tr>";
+                                    //     echo "<td>" . $row["case_number"] . "</td>";
+                                    //     echo "<td>" . $row["type"] . "</td>";
+                                    //     echo "<td>" . $row["subject"] . "</td>";
+                                    //     echo "<td>" . $row["product_group"] . "</td>";
+                                    //     echo "<td>" . $row["product"] . "</td>";
+                                    //     echo "<td>" . $row["product_version"] . "</td>";
+                                    //     echo "<td>" . $row["severity"] . "</td>";
+                                    //     echo "<td>" . $row["case_owner"] . "</td>";
+                                    //     echo "<td>" . $row["company"] . "</td>";
+                                    //     echo "<td>" . $row["last_modified"] . "</td>";
+                                    //     echo "<td>" . $row["datetime_opened"] . "</td>";
+                                    //     echo "<td>$action</td>";
+                                    //     echo "</tr>";
+                                    // }
                                 ?>
                             </tbody>
                         </table>
