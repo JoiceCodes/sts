@@ -1,6 +1,6 @@
 <div class="modal fade" id="addProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
@@ -10,77 +10,63 @@
             </div>
             <div class="modal-body">
                 <form action="../process/add_product.php" id="myForm" method="post" class="needs-validation" novalidate>
-                    <div class="mb-3">
-                        <input type="text" name="name" required placeholder="Product Name" id="name" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <!-- <input type="text" name="category" required placeholder="Product Category" id="category" class="form-control"> -->
-                        <select name="category" required id="category" class="form-control">
-                            <option value="" disabled selected>-- Select Product Category --</option>
-                            <?php
-                            foreach ($productCategories as $row) {
-                                echo "<option value ='" . $row["id"] . "'>" . $row["product_category"] . "</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <select name="type" required id="type" class="form-control">
-                            <option value="" disabled selected>-- Select Product Type --</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <input type="number" name="version" step="0.01" required placeholder="Product Version" id="version" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="supported_platform[]" value="Windows" id="windowsCheck">
-                            <label class="form-check-label" for="windowsCheck">Windows</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="product_group" class="form-label">Product Group</label>
+                                <select name="product_group" id="product_group" class="form-control" required>
+                                    <option value="" disabled selected>-- Select Product Group --</option>
+                                    <option value="Software">Software</option>
+                                    <option value="Hardware">Hardware</option>
+                                    <option value="Service">Service</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="product_type" class="form-label">Product Type</label>
+                                <input name="product_type" id="product_type" class="form-control" placeholder="Product Type" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="product_version" class="form-label">Product Version</label>
+                                <input type="text" name="product_version" step="0.01" required placeholder="Product Version" id="product_version" class="form-control">
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="supported_platform[]" value="MacOS" id="macOsCheck">
-                            <label class="form-check-label" for="macOsCheck">MacOS</label>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="license_type" class="form-label">License Type</label>
+                                <select name="license_type" id="license_type" class="form-control" required>
+                                    <option value="" disabled selected>-- Select License Type --</option>
+                                    <option value="Subscription">Subscription</option>
+                                    <option value="Perpetual">Perpetual</option>
+                                    <option value="Trial">Trial</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="serial_number" class="form-label">Serial Number</label>
+                                <input type="text" name="serial_number" required placeholder="Serial Number" id="serial_number" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select name="status" id="status" class="form-control" required>
+                                    <option value="" disabled selected>-- Select Status --</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Expired">Expired</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-text" id="supportedPlatformsHelp"></div>
                     </div>
-                    <div class="mb-3">
-                        <!-- <input type="text" name="license_type" required placeholder="License Type" id="licenseType" class="form-control"> -->
-                        <select name="license_type" id="licenseType" class="form-control" required>
-                            <option value="" disabled selected>-- Select License Type --</option>
-                            <option value="Subscription">Subscription</option>
-                            <option value="Perpetual">Perpetual</option>
-                            <option value="Service Agreement">Service Agreement</option>
-                            <option value="Enterprise">Enterprise</option>
-                            <option value="Freemium">Freemium</option>
-                            <option value="Trial">Trial</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" name="serial_number" required placeholder="Serial Number" id="serialNumber" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="licenseDuration">License Duration</label>
-                        <input type="date" name="license_duration" required placeholder="License Duration" id="licenseDuration" class="form-control">
-                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Add</button>
+                        <input type="hidden" name="action" value="add">
                     </div>
                 </form>
             </div>
-            <!-- <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">
-                    Cance
-                </button>
-                <form action="../process/accept_case.php" method="post">
-                    <input type="hidden" name="case_id" id="caseId" value="">
-                    <button type="submit" class="btn btn-primary">Assign</button>
-                </form>
-            </div> -->
         </div>
     </div>
 </div>
-
 <script>
     document.getElementById("myForm").addEventListener("submit", function(event) {
         const checkboxes = document.querySelectorAll('input[name="supported_platform[]"]');
@@ -100,38 +86,73 @@
         } else {
             messageDiv.textContent = ""; // Clear the message if at least one is checked
         }
+
+        // Also trigger default Bootstrap validation
+        if (!this.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        this.classList.add('was-validated');
     });
 </script>
 
 <script>
-    document.getElementById("category").addEventListener("change", function() {
-        let categoryId = this.value;
-        let typeSelect = document.getElementById("type");
+    document.getElementById("product_group").addEventListener("change", function() {
+        // Use the value of the product_group select
+        let productGroupValue = this.value;
+        // Target the product_type select
+        let productTypeSelect = document.getElementById("product_type");
 
         // Clear the existing options
-        typeSelect.innerHTML = '<option value="" disabled selected>-- Select Product Type --</option>';
+        productTypeSelect.innerHTML = '<option value="" disabled selected>-- Select Product Type --</option>';
 
-        if (categoryId) {
+        if (productGroupValue) {
             // Make AJAX request
             let xhr = new XMLHttpRequest();
-            xhr.open("POST", "../fetch/product_types.php", true);
+            xhr.open("POST", "../fetch/product_types.php", true); // Keep the original endpoint
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);
-
-                    // Populate the type dropdown
-                    response.forEach(function(item) {
+                    try {
+                        let response = JSON.parse(xhr.responseText);
+                        // Check if the response is an array and not empty
+                        if (Array.isArray(response) && response.length > 0) {
+                            // Populate the product type dropdown
+                            response.forEach(function(item) {
+                                let option = document.createElement("option");
+                                // Assuming the response items have 'id' and 'product_type' properties
+                                option.value = item.id; // Use ID as value
+                                option.textContent = item.product_type; // Use product_type as text
+                                productTypeSelect.appendChild(option);
+                            });
+                        } else {
+                            // Add a default option if no types are returned
+                            let option = document.createElement("option");
+                            option.value = "";
+                            option.textContent = "-- No Product Types Found --";
+                            productTypeSelect.appendChild(option);
+                        }
+                    } catch (e) {
+                        console.error("Error parsing JSON response:", e);
+                        // Add an error option
                         let option = document.createElement("option");
-                        option.value = item.id;
-                        option.textContent = item.product_type;
-                        typeSelect.appendChild(option);
-                    });
+                        option.value = "";
+                        option.textContent = "-- Error loading types --";
+                        productTypeSelect.appendChild(option);
+                    }
+                } else if (xhr.readyState === 4) {
+                    console.error("AJAX error:", xhr.status, xhr.statusText);
+                    // Add an error option on AJAX failure
+                    let option = document.createElement("option");
+                    option.value = "";
+                    option.textContent = "-- Error loading types --";
+                    productTypeSelect.appendChild(option);
                 }
             };
 
-            xhr.send("category_id=" + categoryId);
+            // Send the product_group value
+            xhr.send("product_group=" + encodeURIComponent(productGroupValue));
         }
     });
 </script>

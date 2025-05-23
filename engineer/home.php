@@ -5,7 +5,7 @@ if (!isset($_SESSION["user_id"])) {
     header("Location: ../index.php");
     exit;
 }
-$pageTitle = "Home";
+$pageTitle = "Dashboard";
 require_once "../fetch/new_cases_engineer.php";
 require_once "../fetch/ongoing_cases_engineer.php";
 require_once "../fetch/solved_cases_engineer.php";

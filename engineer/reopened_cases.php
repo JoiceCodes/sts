@@ -6,7 +6,7 @@ if (!isset($_SESSION["user_id"])) {
     exit;
 }
 $pageTitle = "Reopened Cases";
-require_once "../fetch/reopened_cases.php"; 
+require_once "../fetch/technical_reopened_cases.php"; 
 ?>
 
 <!DOCTYPE html>

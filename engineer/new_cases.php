@@ -7,6 +7,19 @@ if (!isset($_SESSION["user_id"])) {
 }
 $pageTitle = "New Cases";
 require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
+
+// Helper function for safe date formatting
+function format_date_mdy($date_string) {
+    if (empty($date_string) || $date_string === 'N/A') {
+        return 'N/A';
+    }
+    $timestamp = strtotime($date_string);
+    if ($timestamp === false) {
+        return htmlspecialchars($date_string); // Return original if parsing fails
+    }
+    return date('m/d/Y', $timestamp); // Format as mm/dd/yyyy
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -17,12 +30,12 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap4.css">
     <style>
          /* Style for details modal labels */
-        #newCaseDetailsModal .modal-body dt {
-            font-weight: bold;
-            color: #5a5c69;
-        }
+         #newCaseDetailsModal .modal-body dt {
+             font-weight: bold;
+             color: #5a5c69;
+         }
          #newCaseDetailsModal .modal-body dd {
-            margin-bottom: 0.75rem;
+             margin-bottom: 0.75rem;
          }
     </style>
 </head>
@@ -56,19 +69,18 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
                                         <tr>
                                             <th>Case Number</th>
                                             <th>Severity</th>
-                                            <th>Case Owner</th> 
+                                            <th>Case Owner</th>
                                             <th>Company</th>
                                             <th>Date Opened</th>
                                             <th>Details</th>
-                                            <th>Action</th> 
-                                        </tr>
+                                            </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         foreach ($newCasesTable as $row) {
                                             // --- Prepare data for details modal attributes ---
                                             $newCaseData = [
-                                                'id' => $row["id"] ?? '',
+                                                'id' => $row["id"] ?? '', // Keep the raw ID
                                                 'case-number' => $row["case_number"] ?? 'N/A',
                                                 'type' => $row["type"] ?? 'N/A',
                                                 'subject' => $row["subject"] ?? 'N/A',
@@ -78,13 +90,14 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
                                                 'severity' => $row["severity"] ?? 'N/A',
                                                 'case-owner' => $row["case_owner"] ?? 'Unassigned', // Default if not set
                                                 'company' => $row["company"] ?? 'N/A',
-                                                'last-modified' => $row["last_modified"] ?? 'N/A',
-                                                'datetime-opened' => $row["datetime_opened"] ?? 'N/A'
+                                                // Format dates here for display and data attributes
+                                                'last-modified' => format_date_mdy($row["last_modified"] ?? 'N/A'),
+                                                'datetime-opened' => format_date_mdy($row["datetime_opened"] ?? 'N/A')
                                             ];
 
                                             $newDataAttributes = '';
                                             foreach ($newCaseData as $key => $value) {
-                                                $newDataAttributes .= ' data-' . $key . '="' . htmlspecialchars($value) . '"';
+                                                $newDataAttributes .= ' data-' . $key . '="' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '"';
                                             }
 
                                             // --- Buttons ---
@@ -93,19 +106,11 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
                                                 class="btn btn-info btn-sm new-view-details-btn"
                                                 ' . $newDataAttributes . '
                                                 data-toggle="modal"
-                                                data-target="#newCaseDetailsModal"> 
+                                                data-target="#newCaseDetailsModal">
                                                 <i class="fas fa-eye"></i> View
                                                 </button>';
 
-                                            $acceptButton = '<button
-                                                type="button"
-                                                class="accept-button btn btn-success btn-sm"
-                                                data-toggle="modal"
-                                                data-target="#acceptCase"
-                                                data-case-id="' . htmlspecialchars($newCaseData["id"]) . '">
-                                                <i class="bi bi-check-lg"></i>
-                                                Accept
-                                                </button>';
+                                            // Accept button is now inside the modal
 
                                             // --- Output Table Row ---
                                             echo "<tr>";
@@ -113,9 +118,9 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
                                             echo "<td>" . htmlspecialchars($newCaseData["severity"]) . "</td>";
                                             echo "<td>" . htmlspecialchars($newCaseData["case-owner"]) . "</td>";
                                             echo "<td>" . htmlspecialchars($newCaseData["company"]) . "</td>";
-                                            echo "<td>" . htmlspecialchars($newCaseData["datetime-opened"]) . "</td>";
+                                            echo "<td>" . htmlspecialchars($newCaseData["datetime-opened"]) . "</td>"; // Use formatted date
                                             echo "<td>" . $viewNewDetailsButton . "</td>"; // View Details Button column
-                                            echo "<td>" . $acceptButton . "</td>"; // Action Button column
+                                            // Removed Action Cell
                                             echo "</tr>";
                                         }
                                         ?>
@@ -134,7 +139,7 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
     </a>
 
     <?php include_once "../modals/logout.php" ?>
-    <?php include_once "../modals/accept_case_confirmation.php" ?> 
+    <?php include_once "../modals/accept_case_confirmation.php" ?>
 
     <div class="modal fade" id="newCaseDetailsModal" tabindex="-1" role="dialog" aria-labelledby="newCaseDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -175,14 +180,16 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
                         <dd class="col-sm-9" id="modalNewCompany"></dd>
 
                         <dt class="col-sm-3">Last Modified:</dt>
-                        <dd class="col-sm-9" id="modalNewLastModified"></dd>
-
-                        <dt class="col-sm-3">Date Opened:</dt>
-                        <dd class="col-sm-9" id="modalNewDatetimeOpened"></dd>
-                    </dl>
+                        <dd class="col-sm-9" id="modalNewLastModified"></dd> <dt class="col-sm-3">Date Opened:</dt>
+                        <dd class="col-sm-9" id="modalNewDatetimeOpened"></dd> </dl>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button"
+                            class="btn btn-success"
+                            id="modalAcceptButton"
+                            data-case-id=""> <i class="bi bi-check-lg"></i> Accept Case
+                    </button>
                 </div>
             </div>
         </div>
@@ -190,11 +197,8 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
 
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
     <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
-
     <script src="../js/sb-admin-2.min.js"></script>
-
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap4.js"></script>
 
@@ -202,8 +206,11 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
         // Initialize DataTable for the new cases table
         $(document).ready(function() {
             $('#newCasesTable').DataTable({ // Use the unique table ID
-                 "order": [[ 4, "desc" ]], // Optional: Default sort by Date Opened descending
-                 "pageLength": 10
+                 "order": [[ 4, "desc" ]], // Sort by Date Opened (index 4) descending
+                 "pageLength": 10,
+                 "columnDefs": [ // Ensure date column sorting works if original data was not uniform
+                     { "type": "date", "targets": 4 } // Treat column 4 as date for sorting
+                 ]
             });
         });
 
@@ -215,6 +222,7 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
             $('#newCasesTable tbody').on('click', '.new-view-details-btn', function() {
                 var button = $(this);
                 var modal = $('#newCaseDetailsModal');
+                var caseId = button.data('id'); // Get the raw case ID
 
                 // Populate the modal using data attributes
                 modal.find('#modalNewCaseNumber').text(button.data('case-number'));
@@ -226,38 +234,40 @@ require_once "../fetch/new_cases.php"; // Assuming this fetches $newCasesTable
                 modal.find('#modalNewSeverity').text(button.data('severity'));
                 modal.find('#modalNewCaseOwner').text(button.data('case-owner'));
                 modal.find('#modalNewCompany').text(button.data('company'));
-                modal.find('#modalNewLastModified').text(button.data('last-modified'));
-                modal.find('#modalNewDatetimeOpened').text(button.data('datetime-opened'));
+                modal.find('#modalNewLastModified').text(button.data('last-modified')); // Already formatted
+                modal.find('#modalNewDatetimeOpened').text(button.data('datetime-opened')); // Already formatted
 
-                // data-toggle on the button shows the modal
+                // Set the case ID on the Accept button INSIDE the modal
+                modal.find('#modalAcceptButton').attr('data-case-id', caseId);
+
+                // data-toggle on the button shows the modal automatically
             });
 
-            // -- Accept Case Modal Trigger --
-            // Use event delegation for the accept button
-            $('#newCasesTable tbody').on('click', '.accept-button', function() {
-                // Assuming your accept_case_confirmation.php modal has an input with id="caseId"
+            // -- Accept Case Confirmation Modal Trigger (from within Details Modal) --
+            $('#newCaseDetailsModal').on('click', '#modalAcceptButton', function() {
+                var caseId = $(this).data('case-id'); // Get case ID from the button inside the modal
+
+                // Find the hidden input in the accept_case_confirmation.php modal
                 const caseIdInput = document.getElementById("caseId"); // Get hidden input in accept modal
-                 if(caseIdInput) {
-                     caseIdInput.value = $(this).data("case-id"); // Get case-id from button's data attribute
-                 } else {
-                     console.error("Could not find #caseId input in accept modal.");
-                 }
-                // data-toggle on the button shows the #acceptCase modal
+
+                if(caseIdInput && caseId) {
+                     caseIdInput.value = caseId; // Set the value
+
+                     // Hide the details modal FIRST
+                     $('#newCaseDetailsModal').modal('hide');
+
+                     // THEN show the confirmation modal
+                     $('#acceptCase').modal('show'); // Manually trigger the confirmation modal
+
+                } else {
+                     console.error("Could not find #caseId input in accept modal or caseId is missing.");
+                     // Optionally provide user feedback here
+                     alert("Error preparing case acceptance. Please try again.");
+                }
             });
 
-            /*
-             // Original Vanilla JS for Accept button - Keep if preferred, but delegation is better for DataTables
-             const acceptCaseModal = document.getElementById("acceptCase"); // Check ID in accept_case_confirmation.php
-             const caseIdHidden = document.getElementById("caseId"); // Check ID in accept_case_confirmation.php
-
-             if (acceptCaseModal && caseIdHidden) {
-                 document.querySelectorAll('.accept-button').forEach(item => { // This won't work reliably with DataTables paging/sorting
-                     item.addEventListener('click', function(event) {
-                         caseIdHidden.value = this.getAttribute('data-case-id');
-                     });
-                 });
-             }
-            */
+            // Remove the old event listener that targeted accept buttons in the table (they don't exist there anymore)
+            // $('#newCasesTable tbody').on('click', '.accept-button', function() { ... }); // THIS IS NOW REMOVED/COMMENTED OUT
 
         }); // End $(document).ready()
     </script>

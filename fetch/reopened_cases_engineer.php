@@ -1,9 +1,9 @@
 <?php
 require_once "../config/database.php";
 
-$getTotalReopenedCases = mysqli_prepare($connection, "SELECT COUNT(*) AS total_reopened_cases FROM cases WHERE case_status = ? AND user_id = ? AND reopen > 0");
+$getTotalReopenedCases = mysqli_prepare($connection, "SELECT COUNT(*) AS total_reopened_cases FROM cases WHERE case_status = ? AND reopen > 0");
 $caseStatus = "Waiting in Progress";
-mysqli_stmt_bind_param($getTotalReopenedCases, "si", $caseStatus, $_SESSION["user_id"]);
+mysqli_stmt_bind_param($getTotalReopenedCases, "s", $caseStatus);
 mysqli_stmt_execute($getTotalReopenedCases);
 $getTotalReopenedCasesResult = mysqli_stmt_get_result($getTotalReopenedCases);
 $totalReopenedCases = 0;

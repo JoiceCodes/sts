@@ -1,6 +1,6 @@
 <?php
 session_start();
-$pageTitle = "Home";
+$pageTitle = "Dashboard";
 require_once "../fetch/new_cases_by_user.php";
 require_once "../fetch/ongoing_cases_by_user.php";
 require_once "../fetch/solved_cases_by_user.php";

@@ -45,6 +45,11 @@ require_once "../fetch/engineers.php"; // Fetches $engineers (used in assign_cas
             word-wrap: break-word;
             /* Prevent long strings from breaking layout */
         }
+        /* Style for subject text */
+        #modalSubject {
+             white-space: pre-wrap; /* Allows line breaks and wraps text */
+             word-break: break-word; /* Breaks long words if necessary */
+        }
     </style>
 </head>
 
@@ -104,15 +109,7 @@ require_once "../fetch/engineers.php"; // Fetches $engineers (used in assign_cas
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Case Number</th>
-                                            <th>Type</th>
-                                            <th>Severity</th>
-                                            <th>Company</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </tfoot>
+
                                     <tbody>
                                         <?php
                                         // Check if $newCasesTable is set and is an array
@@ -130,48 +127,39 @@ require_once "../fetch/engineers.php"; // Fetches $engineers (used in assign_cas
                                                 $case_owner = $row["case_owner"] ?? 'N/A';
                                                 $company = $row["company"] ?? 'N/A';
 
-                                                // --- Create the View Details Button ---
+                                                // --- Create ONLY the View Details Button for the table row ---
                                                 $viewDetailsButton = '<button
-                                                    type="button"
-                                                    class="view-details-btn btn btn-info btn-sm"
-                                                    data-toggle="modal"
-                                                    data-target="#caseDetailsModal"
-                                                    data-case-number="' . htmlspecialchars($case_number, ENT_QUOTES) . '"
-                                                    data-type="' . htmlspecialchars($type, ENT_QUOTES) . '"
-                                                    data-subject="' . htmlspecialchars($subject, ENT_QUOTES) . '"
-                                                    data-product-group="' . htmlspecialchars($product_group, ENT_QUOTES) . '"
-                                                    data-product="' . htmlspecialchars($product, ENT_QUOTES) . '"
-                                                    data-product-version="' . htmlspecialchars($product_version, ENT_QUOTES) . '"
-                                                    data-severity="' . htmlspecialchars($severity, ENT_QUOTES) . '"
-                                                    data-case-owner="' . htmlspecialchars($case_owner, ENT_QUOTES) . '"
-                                                    data-company="' . htmlspecialchars($company, ENT_QUOTES) . '"
-                                                    data-case-id="' . htmlspecialchars($case_id, ENT_QUOTES) . '"
-                                                    title="View Details">
-                                                        <i class="fas fa-eye"></i> View
-                                                    </button>';
+                                                                        type="button"
+                                                                        class="view-details-btn btn btn-info btn-sm"
+                                                                        data-toggle="modal"
+                                                                        data-target="#caseDetailsModal"
+                                                                        data-case-number="' . htmlspecialchars($case_number, ENT_QUOTES) . '"
+                                                                        data-type="' . htmlspecialchars($type, ENT_QUOTES) . '"
+                                                                        data-subject="' . htmlspecialchars($subject, ENT_QUOTES) . '"
+                                                                        data-product-group="' . htmlspecialchars($product_group, ENT_QUOTES) . '"
+                                                                        data-product="' . htmlspecialchars($product, ENT_QUOTES) . '"
+                                                                        data-product-version="' . htmlspecialchars($product_version, ENT_QUOTES) . '"
+                                                                        data-severity="' . htmlspecialchars($severity, ENT_QUOTES) . '"
+                                                                        data-case-owner="' . htmlspecialchars($case_owner, ENT_QUOTES) . '"
+                                                                        data-company="' . htmlspecialchars($company, ENT_QUOTES) . '"
+                                                                        data-case-id="' . htmlspecialchars($case_id, ENT_QUOTES) . '"
+                                                                        title="View Details">
+                                                                            <i class="fas fa-eye"></i> View
+                                                                        </button>';
 
-                                                // --- Create the Assign Case Button ---
-                                                $assignCaseButton = '<button
-                                                    type="button"
-                                                    class="accept-button btn btn-success btn-sm"
-                                                    data-toggle="modal"
-                                                    data-target="#assignCase"
-                                                    data-case-id="' . htmlspecialchars($case_id, ENT_QUOTES) . '"
-                                                    title="Assign Case">
-                                                        <i class="fas fa-user-plus"></i> Assign
-                                                    </button>';
-                                                // Changed icon to fa-user-plus for assign
+                                                // --- Assign button is removed from here ---
+                                                // $assignCaseButton = '...'; // No longer needed here
 
-                                                // --- Combine buttons in the action cell ---
-                                                $actions = $viewDetailsButton . $assignCaseButton;
+                                                // --- Set actions to ONLY the view button ---
+                                                $actions = $viewDetailsButton; // Only the view button
 
                                                 // --- Output table row ---
                                                 echo "<tr>";
                                                 echo "<td>" . htmlspecialchars($case_number, ENT_QUOTES) . "</td>"; // Display Case Number
-                                                echo "<td>" . htmlspecialchars($type, ENT_QUOTES) . "</td>";         // Display Type
-                                                echo "<td>" . htmlspecialchars($severity, ENT_QUOTES) . "</td>";     // Display Severity
-                                                echo "<td>" . htmlspecialchars($company, ENT_QUOTES) . "</td>";      // Display Company
-                                                echo "<td class='text-nowrap'>" . $actions . "</td>"; // Display combined action buttons, text-nowrap prevents wrapping
+                                                echo "<td>" . htmlspecialchars($type, ENT_QUOTES) . "</td>";       // Display Type
+                                                echo "<td>" . htmlspecialchars($severity, ENT_QUOTES) . "</td>";   // Display Severity
+                                                echo "<td>" . htmlspecialchars($company, ENT_QUOTES) . "</td>";     // Display Company
+                                                echo "<td class='text-nowrap'>" . $actions . "</td>"; // Display action button(s), text-nowrap prevents wrapping
                                                 echo "</tr>";
                                             }
                                         } else {
@@ -204,6 +192,7 @@ require_once "../fetch/engineers.php"; // Fetches $engineers (used in assign_cas
 
     <?php
     // Ensure this path is correct and it contains the necessary form elements including '<input type="hidden" name="case_id" id="caseId">'
+    // This modal will now be triggered FROM the Case Details modal
     include_once "../modals/assign_case.php";
     ?>
 
@@ -227,32 +216,38 @@ require_once "../fetch/engineers.php"; // Fetches $engineers (used in assign_cas
                         <div class="col-md-6">
                             <p><strong>Company:</strong> <span id="modalCompany"></span></p>
                             <p><strong>Case Owner:</strong> <span id="modalCaseOwner"></span></p>
-                            <p><strong>Product Version:</strong> <span id="modalProductVersion"></span></p>
+                             <p><strong>Product Version:</strong> <span id="modalProductVersion"></span></p>
                         </div>
                     </div>
-                    <div class="row mb-3">
+                     <div class="row mb-3">
                         <div class="col-md-6">
                             <p><strong>Product Group:</strong> <span id="modalProductGroup"></span></p>
                         </div>
-                        <div class="col-md-6">
-                            <p><strong>Product:</strong> <span id="modalProduct"></span></p>
-                        </div>
+                         <div class="col-md-6">
+                             <p><strong>Product:</strong> <span id="modalProduct"></span></p>
+                         </div>
                     </div>
                     <hr>
                     <p><strong>Subject:</strong></p>
-                    <p><span id="modalSubject" style="white-space: pre-wrap;"></span></p>
-                </div>
+                    <p><span id="modalSubject"></span></p> </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+                    <button type="button"
+                            class="accept-button btn btn-success"
+                            data-toggle="modal"
+                            data-target="#assignCase"
+                            data-case-id=""  
+                            title="Assign Case">
+                        <i class="fas fa-user-plus"></i> Assign
+                    </button>
+                    </div>
             </div>
         </div>
     </div>
+
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
     <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
-
     <script src="../js/sb-admin-2.min.js"></script>
     <?php
     // Conditionally include form validation if needed for other forms on the page
@@ -274,26 +269,32 @@ require_once "../fetch/engineers.php"; // Fetches $engineers (used in assign_cas
             });
 
             // --- Assign Case Modal Logic ---
+            // This handles setting the hidden input field when the "Assign" button
+            // (which is now ONLY inside the #caseDetailsModal footer) is clicked.
             const caseIdHidden = document.getElementById("caseId"); // Get the hidden input once
 
-            // Use event delegation for dynamically added/filtered rows (more robust)
-            $('#dataTable tbody').on('click', '.accept-button', function() {
-                const caseId = $(this).data('case-id'); // Use jQuery data method
+            // Use event delegation on the *details modal* to catch clicks on its accept button
+            $('#caseDetailsModal').on('click', '.accept-button', function() {
+                const caseId = $(this).data('case-id'); // Get case ID from the button clicked INSIDE details modal
                 if (caseIdHidden) {
                     caseIdHidden.value = caseId;
                 } else {
                     console.error("Element with ID 'caseId' not found in the assign case modal.");
                     alert("Error: Cannot set case ID for assignment."); // User feedback
                 }
-                // Optional: Pre-fill other fields in the assign modal if needed
-                // $('#assignCase').modal('show'); // Show modal - data-toggle usually handles this
+                 // No need to manually show the #assignCase modal here,
+                 // as data-toggle="modal" and data-target="#assignCase" on the button handle it.
+
+                 // OPTIONAL: Hide the details modal when assign modal opens
+                 // $('#caseDetailsModal').modal('hide');
             });
 
 
             // --- Case Details Modal Logic ---
+            // This populates the details modal when a "View" button in the table is clicked.
             const detailsModal = $('#caseDetailsModal'); // Use jQuery selector
 
-            // Use event delegation for the details button as well
+            // Use event delegation for the details button in the table
             $('#dataTable tbody').on('click', '.view-details-btn', function() {
                 const buttonData = $(this).data(); // Get all data-* attributes as an object
 
@@ -309,33 +310,12 @@ require_once "../fetch/engineers.php"; // Fetches $engineers (used in assign_cas
                 detailsModal.find('#modalProductVersion').text(buttonData.productVersion);
                 detailsModal.find('#modalSubject').text(buttonData.subject); // Display subject text
 
-                // No need to manually show the modal if using data-toggle="modal" data-target="..."
-                // detailsModal.modal('show');
-            });
+                // Set the case ID on the "Assign" button INSIDE the modal footer
+                detailsModal.find('.accept-button').data('case-id', buttonData.caseId); // Use .data() to set it
 
-            // --- Optional: Assign from Details Modal ---
-            // const assignModal = $('#assignCase');
-            // detailsModal.on('click', '.assign-from-details', function() {
-            //     // Need to get the case ID associated with the currently open details modal.
-            //     // One way is to read it back from a field inside the details modal
-            //     // or have stored it when the details modal was opened.
-            //     // Let's assume the view-details-btn still holds the definitive ID.
-            //     // This is tricky because the context of the button that opened detailsModal is lost here.
-            //     // A better way: add the case-id to the details modal itself or its elements when populating.
-            //
-            //     // Example: Add data-case-id to the modal content when populating:
-            //     // Inside the '.view-details-btn' click handler:
-            //     // detailsModal.find('.modal-content').attr('data-current-case-id', buttonData.caseId);
-            //
-            //     // Then here:
-            //     // const currentCaseId = detailsModal.find('.modal-content').attr('data-current-case-id');
-            //     // if(caseIdHidden && currentCaseId) {
-            //     //     caseIdHidden.value = currentCaseId;
-            //     //     assignModal.modal('show'); // Show the assign modal
-            //     // } else {
-            //     //     alert('Could not determine Case ID to assign.');
-            //     // }
-            // });
+                 // No need to manually show the details modal if using data-toggle="modal" data-target="..." on the table button
+                 // detailsModal.modal('show'); // This would be redundant
+            });
 
         });
     </script>

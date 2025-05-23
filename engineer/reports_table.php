@@ -516,7 +516,7 @@ if ($isEngineerView && $loggedInUserId) {
         <?php include_once "../components/sidebar.php"; ?>
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <?php include_once "../components/administrator_topbar.php"; ?>
+            <?php include_once "../components/engineer_topbar.php" ?>
 
                 <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">

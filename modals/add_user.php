@@ -13,16 +13,19 @@
                     <div class="mb-3">
                         <p class="form-text">Personal Information</p>
                         <div class="mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
                             <input type="text" name="first_name" required placeholder="First Name" id="firstName" class="form-control">
                         </div>
                         <div class="mb-3">
+                            <label for="middleName" class="form-label">Middle Name</label>
                             <input type="text" name="middle_name" placeholder="Middle Name" id="middleName" class="form-control">
                         </div>
                         <div class="mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
                             <input type="text" name="last_name" required placeholder="Last Name" id="lastName" class="form-control">
                         </div>
                         <div>
-                            <label for="suffix">Suffix</label>
+                            <label for="suffix" class="form-label">Suffix</label>
                             <select name="suffix" id="suffix" class="form-control">
                                 <option value=""></option>
                                 <option value="Sr.">Sr.</option>
@@ -38,6 +41,7 @@
                     <div class="mb-3">
                         <p class="form-text">Contact Information</p>
                         <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
                             <input type="email" name="email" required placeholder="Email Address" id="email" class="form-control">
                         </div>
                     </div>
@@ -45,12 +49,15 @@
                     <div class="mb-3">
                         <p class="form-text">Login Credentials</p>
                         <div class="mb-3">
+                             <label for="username" class="form-label">Username</label>
                             <input type="text" name="username" required placeholder="Username" id="username" class="form-control">
                         </div>
                         <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
                             <input type="password" name="password" required placeholder="Password" id="password" class="form-control">
                         </div>
                         <div class="mb-3">
+                             <label for="repeatPassword" class="form-label">Repeat Password</label>
                             <input type="password" name="repeat_password" required placeholder="Repeat Password" id="repeatPassword" class="form-control">
                         </div>
                     </div>

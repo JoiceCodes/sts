@@ -264,57 +264,73 @@ $currentUserFullName = isset($_SESSION['user_full_name']) ? $_SESSION['user_full
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-                                        // Assuming $ongoingCasesTable is fetched correctly
-                                        if (isset($ongoingCasesTable) && is_array($ongoingCasesTable)) {
-                                            foreach ($ongoingCasesTable as $row) {
-                                                // Prepare data, using htmlspecialchars for safety
-                                                // Case number link still triggers chat modal
-                                                $caseNumberLink = '<a href="#" class="case-number btn btn-link p-0" data-case-id="' . htmlspecialchars($row["id"]) . '" data-case-number="' . htmlspecialchars($row["case_number"]) . '" data-case-owner="' . htmlspecialchars($_SESSION["user_id"]) . '">' . htmlspecialchars($row["case_number"]) . '</a>';
-                                                $contactName = htmlspecialchars($row["contact_name"]);
-                                                $severity = htmlspecialchars($row["severity"]);
-                                                $company = htmlspecialchars($row["company"]);
-                                                $lastModified = htmlspecialchars($row["last_modified"]); // Assuming this column exists
+                                            <?php
+                                            // Assuming $ongoingCasesTable is fetched correctly
+                                            if (isset($ongoingCasesTable) && is_array($ongoingCasesTable)) {
+                                                foreach ($ongoingCasesTable as $row) {
+                                                    // Prepare data, using htmlspecialchars for safety
 
-                                                // Data for the details modal
-                                                $type = htmlspecialchars($row["type"]);
-                                                $subject = htmlspecialchars($row["subject"]);
-                                                $productGroup = htmlspecialchars($row["product_group"]);
-                                                $product = htmlspecialchars($row["product"]);
-                                                $productVersion = htmlspecialchars($row["product_version"]);
-                                                $dateTimeOpened = htmlspecialchars($row["datetime_opened"]); // Assuming this column exists
+                                                    // Case number link still triggers chat modal
+                                                    $caseNumberLink = '<a href="#" class="case-number btn btn-link p-0" data-case-id="' . htmlspecialchars($row["id"]) . '" data-case-number="' . htmlspecialchars($row["case_number"]) . '" data-case-owner="' . htmlspecialchars($_SESSION["user_id"]) . '">' . htmlspecialchars($row["case_number"]) . '</a>';
+                                                    $contactName = htmlspecialchars($row["contact_name"]);
+                                                    $severity = htmlspecialchars($row["severity"]);
+                                                    $company = htmlspecialchars($row["company"]);
 
-                                                echo "<tr>";
-                                                echo "<td>" . $caseNumberLink . "</td>";   // Display Case Number (link for chat)
-                                                echo "<td>" . $contactName . "</td>";      // Display Contact Name
-                                                echo "<td>" . $severity . "</td>";         // Display Severity
-                                                echo "<td>" . $company . "</td>";          // Display Company
-                                                echo "<td>" . $lastModified . "</td>";     // Display Last Modified
+                                                    // --- FORMATTING START ---
+                                                    // Format Last Modified Date
+                                                    $lastModifiedRaw = $row["last_modified"];
+                                                    $lastModifiedTimestamp = strtotime($lastModifiedRaw);
+                                                    $lastModifiedFormatted = $lastModifiedTimestamp ? date('m/d/Y', $lastModifiedTimestamp) : ($lastModifiedRaw ?: 'N/A'); // Format or show original/N/A
+                                                    $lastModified = htmlspecialchars($lastModifiedFormatted);
 
-                                                // Add the View Details button
-                                                echo '<td>';
-                                                echo '<button type="button" class="btn btn-info btn-sm view-details-btn"
-                                                            data-toggle="modal"
-                                                            data-target="#detailsModal"
-                                                            data-case-number="' . htmlspecialchars($row["case_number"]) . '"
-                                                            data-type="' . $type . '"
-                                                            data-subject="' . $subject . '"
-                                                            data-product-group="' . $productGroup . '"
-                                                            data-product="' . $product . '"
-                                                            data-product-version="' . $productVersion . '"
-                                                            data-datetime-opened="' . $dateTimeOpened . '">
-                                                            <i class="fas fa-eye"></i> View
-                                                          </button>';
-                                                echo '</td>';
+                                                    // Format Date & Time Opened (Just Date part)
+                                                    $dateTimeOpenedRaw = $row["datetime_opened"];
+                                                    $dateTimeOpenedTimestamp = strtotime($dateTimeOpenedRaw);
+                                                    // Store original for potential JS use if needed, format for display
+                                                    $dateTimeOpenedOriginal = htmlspecialchars($dateTimeOpenedRaw); // Keep original if needed elsewhere
+                                                    $dateTimeOpenedFormatted = $dateTimeOpenedTimestamp ? date('m/d/Y', $dateTimeOpenedTimestamp) : ($dateTimeOpenedRaw ?: 'N/A'); // Format or show original/N/A
+                                                    $dateTimeOpenedForDisplay = htmlspecialchars($dateTimeOpenedFormatted);
+                                                    // --- FORMATTING END ---
 
-                                                echo "</tr>";
+                                                    // Data for the details modal
+                                                    $type = htmlspecialchars($row["type"]);
+                                                    $subject = htmlspecialchars($row["subject"]);
+                                                    $productGroup = htmlspecialchars($row["product_group"]);
+                                                    $product = htmlspecialchars($row["product"]);
+                                                    $productVersion = htmlspecialchars($row["product_version"]);
+
+                                                    echo "<tr>";
+                                                    echo "<td>" . $caseNumberLink . "</td>";       // Display Case Number (link for chat)
+                                                    echo "<td>" . $contactName . "</td>";          // Display Contact Name
+                                                    echo "<td>" . $severity . "</td>";             // Display Severity
+                                                    echo "<td>" . $company . "</td>";              // Display Company
+                                                    echo "<td>" . $lastModified . "</td>";         // Display Formatted Last Modified
+
+                                                    // Add the View Details button
+                                                    echo '<td>';
+                                                    echo '<button type="button" class="btn btn-info btn-sm view-details-btn"
+                                                                data-toggle="modal"
+                                                                data-target="#detailsModal"
+                                                                data-case-number="' . htmlspecialchars($row["case_number"]) . '"
+                                                                data-type="' . $type . '"
+                                                                data-subject="' . $subject . '"
+                                                                data-product-group="' . $productGroup . '"
+                                                                data-product="' . $product . '"
+                                                                data-product-version="' . $productVersion . '"
+                                                                data-datetime-opened-original="' . $dateTimeOpenedOriginal . '" /* Pass original potentially */
+                                                                data-datetime-opened-formatted="' . $dateTimeOpenedForDisplay . '" /* Pass formatted */ >
+                                                                <i class="fas fa-eye"></i> View
+                                                            </button>';
+                                                    echo '</td>';
+
+                                                    echo "</tr>";
+                                                }
+                                            } else {
+                                                // Handle case where data isn't available or is not an array
+                                                echo '<tr><td colspan="6" class="text-center">No ongoing cases found.</td></tr>';
                                             }
-                                        } else {
-                                            // Handle case where data isn't available or is not an array
-                                            echo '<tr><td colspan="6" class="text-center">No ongoing cases found.</td></tr>';
-                                        }
-                                        ?>
-                                    </tbody>
+                                            ?>
+                                        </tbody>
                                 </table>
                             </div>
                         </div>
@@ -331,8 +347,8 @@ $currentUserFullName = isset($_SESSION['user_full_name']) ? $_SESSION['user_full
     <?php include_once "../modals/logout.php" ?>
     <?php include_once "../modals/mark_as_solved.php" ?>
 
-    <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+    <!-- <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document"> -->
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="chatModalLabel">Chat for Case #<span id="chat-modal-case-number"></span></h5>

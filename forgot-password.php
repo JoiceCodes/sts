@@ -21,9 +21,20 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+    </style>
+
 </head>
 
-<body class="bg-gradient-primary">
+<body>
 
     <div class="container">
 
@@ -52,11 +63,12 @@
                                     <?php endif; ?>
 
                                     <form class="user needs-validation" novalidate action="process/forgot_password_send_otp.php" method="post">
-                                        <div class="form-group">
-                                            <input type="email" name="email" required class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
-                                        </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control form-control-user"
+                                            id="exampleInputEmail" aria-describedby="emailHelp"
+                                            placeholder="Enter Email Address...">
+                                    </div>
                                         <!-- <a href="index.php" class="btn btn-primary btn-user btn-block">
                                             Reset Password
                                         </a> -->

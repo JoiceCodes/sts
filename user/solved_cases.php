@@ -109,13 +109,21 @@ require_once "../fetch/solved_cases_table_user.php"; // Ensure this fetches last
                                                     Reopen
                                                     </button>';
 
-                                                echo "<tr>";
-                                                echo "<td>" . htmlspecialchars($row["case_number"] ?? 'N/A') . "</td>";
-                                                echo "<td>" . htmlspecialchars($row["severity"] ?? 'N/A') . "</td>";
-                                                echo "<td>" . htmlspecialchars($row["company"] ?? 'N/A') . "</td>";
-                                                echo "<td>" . htmlspecialchars($row["datetime_opened"] ?? 'N/A') . "</td>";
-                                                echo "<td class='actions-col'>" . $viewButton . "&nbsp;" . $reopenButton . "</td>";
-                                                
+                                                    echo "<tr>";
+                                                    echo "<td>" . htmlspecialchars($row["case_number"] ?? 'N/A') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row["severity"] ?? 'N/A') . "</td>";
+                                                    echo "<td>" . htmlspecialchars($row["company"] ?? 'N/A') . "</td>";
+                                                    
+                                                    // Format datetime_opened to mm/dd/yyyy
+                                                    if (!empty($row["datetime_opened"])) {
+                                                        $date = date('m/d/Y', strtotime($row["datetime_opened"]));
+                                                    } else {
+                                                        $date = 'N/A';
+                                                    }
+                                                    echo "<td>" . htmlspecialchars($date) . "</td>";
+                                                    
+                                                    echo "<td class='actions-col'>" . $viewButton . "&nbsp;" . $reopenButton . "</td>";
+                                                    
                                                 echo "</tr>";
                                             }
                                         } else {

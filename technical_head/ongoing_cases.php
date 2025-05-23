@@ -147,6 +147,8 @@ require_once "../fetch/technical_ongoing_cases.php";
                                         <?php
                                         foreach ($ongoingCasesTable as $row) {
                                             // Link for chat
+                                            // $caseNumberLink = '<a href="#" class="case-number btn btn-link p-0" data-case-id="' . htmlspecialchars($row["id"]) . '" data-case-number="' . htmlspecialchars($row["case_number"]) . '" data-case-owner-name="' . htmlspecialchars($row["case_owner"]) . '">' . htmlspecialchars($row["case_number"]) . '</a>';
+
                                             $caseNumberLink = '<a href="#" class="case-number btn btn-link p-0" data-case-id="' . htmlspecialchars($row["id"]) . '" data-case-number="' . htmlspecialchars($row["case_number"]) . '" data-case-owner-name="' . htmlspecialchars($row["case_owner"]) . '">' . htmlspecialchars($row["case_number"]) . '</a>';
 
                                             // Transfer Button
@@ -203,7 +205,7 @@ require_once "../fetch/technical_ongoing_cases.php";
                 <div class="modal-header">
                     <h5 class="modal-title" id="chatModalLabel">Chat</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">&times;</span>  
                     </button>
                 </div>
                 <div class="modal-body">

@@ -57,9 +57,7 @@
 
                                     <form class="user needs-validation" novalidate action="process/forgot_password_reset_password.php" method="post">
                                         <div class="form-group">
-                                            <!-- <input type="email" name="email" required class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address..."> -->
+                                          
                                             <input type="password" name="password" required class="form-control form-control-user"
                                                 id="exampleInputEmail" aria-describedby="emailHelp"
                                                 placeholder="Enter New Password...">
@@ -69,18 +67,10 @@
                                                 id="exampleInputEmail" aria-describedby="emailHelp"
                                                 placeholder="Repeat Password...">
                                         </div>
-                                        <!-- <a href="index.php" class="btn btn-primary btn-user btn-block">
-                                            Reset Password
-                                        </a> -->
+                                
                                         <button type="submit" class="btn btn-primary btn-user btn-block">Reset Password</button>
                                     </form>
-                                    <!-- <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="register.php">Create an Account!</a>
-                                    </div>
-                                    <div class="text-center">
-                                        <a class="small" href="index.php">Already have an account? Login!</a>
-                                    </div> -->
+                                  
                                 </div>
                             </div>
                         </div>
